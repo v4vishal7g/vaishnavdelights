@@ -960,9 +960,10 @@ body{
       </div>
 
       <button class="btn" style="width:100%;margin-top:14px"
-        onclick="confirmOrder()">
-        Place Order
-      </button>
+  onclick="startOnlinePayment()">
+  Pay Now
+</button>
+
 
     </div>
 
@@ -2869,43 +2870,70 @@ document.getElementById('co_pincode')?.addEventListener('input', function(){
   }
 });
 
-  async function startOnlinePayment(){
-  if(!currentUser){
-    showToast('Please login first');
+ 
+
+<script>
+async function startOnlinePayment(){
+
+  if(!currentUser || !currentUser.email || currentUser.email === 'guest'){
+    showToast('Please login to continue');
+    switchPage('loginPage');
     return;
   }
 
   if(!window._selectedAddress){
-    showToast('Please select address');
+    showToast('Please select delivery address');
+    switchPage('checkoutAddressPage');
     return;
   }
 
-  const total = calculateFinalTotal(); // COD +40 logic yahi hona chahiye
+  let total = calculateCartTotal();
 
-  // 🔥 STEP A: Create Razorpay Order (Backend call)
-  const res = await apiCall({
+  if(!total || total <= 0){
+    showToast('Invalid order amount');
+    return;
+  }
+
+  const payMethod =
+    document.querySelector('input[name="pay"]:checked')?.value || 'upi';
+
+  // COD → direct order
+  if(payMethod === 'cod'){
+    placeFinalOrder('cod', total + 40);
+    return;
+  }
+
+  // ONLINE PAYMENT
+  showLoader('Redirecting to payment…');
+
+  const order = await apiCall({
     action: 'create_razorpay_order',
     total: total
   });
 
-  if(!res || res.status !== 'ok'){
-    showToast('Payment init failed');
+  hideLoader();
+
+  if(!order || order.status !== 'ok'){
+    showToast('Payment not initiated');
     return;
   }
 
-  // 🔥 STEP B: Open Razorpay
   const options = {
-    key: 'rzp_live_Rsn0GKZCudvtAN', // LIVE key
+    key: RAZORPAY_KEY,
     amount: total * 100,
-    currency: 'INR',
-    name: 'Vaishnav Delights',
-    description: 'Order Payment',
-    order_id: res.razorpay_order_id,
+    currency: "INR",
+    name: "Vaishnav Delights",
+    description: "Order Payment",
+    order_id: order.razorpay_order_id,
+
+    prefill: {
+      name: currentUser.name,
+      email: currentUser.email
+    },
 
     handler: function (response) {
-      // ✅ Payment success → place order
       placeFinalOrder(
-        'online',
+        payMethod,
         total,
         response.razorpay_payment_id,
         response.razorpay_order_id,
@@ -2913,20 +2941,15 @@ document.getElementById('co_pincode')?.addEventListener('input', function(){
       );
     },
 
-    prefill: {
-      name: currentUser.name,
-      email: currentUser.email,
-      contact: window._selectedPhone || ''
-    },
-
     theme: {
-      color: '#ffb703'
+      color: "#fb8500"
     }
   };
 
   const rzp = new Razorpay(options);
   rzp.open();
 }
+</script>
 
 
 </script>
