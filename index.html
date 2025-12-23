@@ -1225,7 +1225,7 @@ body{
 
 <script>
 /* ------------------------- CONFIG ------------------------- */
-const API_URL = "https://script.google.com/macros/s/AKfycbyE59-RejUFh6gOFu0lx6RBXZUZQp-4tawSp0aZIVcUYayMGB8nwgfYk2v66L_4VfsH/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbw8e23bdfhWFFY3_ZF6aJG87jwTsb707l1OdZpKGtbxS4Ei7fyISe5-aar3edvtPcHH/exec";
 const RAZORPAY_KEY = "rzp_live_RukjWIITK7i5hU"; // TODO change to your Razorpay key
 
 
@@ -2427,15 +2427,16 @@ function goCheckout(){
 
 async function confirmOrder(){
 
-  // 🔐 LOGIN CHECK (FIX)
+  // 🔒 LOGIN REQUIRED
   if(!currentUser || !currentUser.email || currentUser.email === 'guest'){
-    showToast('Please login to place order');
+    showToast('Please login to continue');
     switchPage('loginPage');
     return;
   }
 
+  // 📍 ADDRESS REQUIRED
   if(!window._selectedAddress){
-    showToast('Address missing');
+    showToast('Please select address');
     switchPage('checkoutAddressPage');
     return;
   }
@@ -2449,13 +2450,26 @@ async function confirmOrder(){
   let total = calculateCartTotal();
   if(pay === 'cod') total += 40;
 
+  console.log('PAY:', pay, 'TOTAL:', total);
+
+  // ✅ CASH ON DELIVERY
   if(pay === 'cod'){
     placeFinalOrder('cod', total);
     return;
   }
 
-  openRazorpay(total, pay);
+  // ✅ ONLINE PAYMENT (RAZORPAY)
+  try{
+    showLoader('Initializing payment…');
+    await openRazorpay(total, pay);
+  }catch(err){
+    console.error(err);
+    showToast('Payment not initiated');
+  }finally{
+    hideLoader();
+  }
 }
+
 
 
 function saveAddressAndContinue(){
