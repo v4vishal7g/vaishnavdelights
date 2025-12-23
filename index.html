@@ -1,0 +1,2856 @@
+<!DOCTYPE html>
+<html lang="en">
+  
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<meta name="theme-color" content="#ffb703">
+<title>Vaishnav Delights – Buy Pure & Authentic Thekua Online in India</title>
+<meta name="description" content="Order premium handmade Bihar style thekua online. Authentic taste with jaggery, ghee and whole wheat. Pan India delivery available.">
+<meta name="keywords" content="thekua, buy thekua online, jaggery thekua, bihar thekua, ghee thekua, vaishnav delights">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<style>
+:root{
+  --bg:#fff; --text:#111; --muted:#777;
+  --accent:#ffb703; --accent2:#fb8500; --footer-bg:#272b2d;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  font-size:16px;
+}
+.container{width:min(1100px,94%);margin:auto}
+.page{display:none;padding-top:10px}
+.show{display:block!important}
+input,textarea,select{
+  width:100%;
+  padding:11px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  margin:8px 0;
+  font-family:Poppins;
+  font-size:0.98rem;
+}
+.btn{
+  padding:10px 16px;
+  border:none;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#111;
+  font-weight:700;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:0.95rem;
+}
+a, a:visited, a:hover, a:focus { text-decoration:none; color:inherit; outline:none; }
+
+header{
+  position:sticky;top:0;background:#fff;border-bottom:1px solid #eee;
+  padding:8px 0;z-index:999
+}
+nav{display:flex;justify-content:space-between;align-items:center}
+.brand{display:flex;align-items:center;gap:10px}
+.brand h2{font-size:1.05rem;margin:0}
+
+.hamburger{
+  display:flex;flex-direction:column;justify-content:center;gap:4px;
+  padding:10px;border-radius:8px;background:#f3f3f3;border:1px solid #eee;cursor:pointer;
+}
+.hamburger .hl{width:18px;height:2px;background:#111;border-radius:2px;display:block}
+
+.menu-dropdown{
+  position:fixed;left:-260px;top:0;height:100%;width:260px;background:#fff;
+  border-right:1px solid #eee;box-shadow:4px 0 18px rgba(0,0,0,0.1);
+  padding:20px;display:block;transition:all .3s ease;z-index:2000;
+}
+.menu-dropdown.open{left:0;}
+.menu-dropdown a{
+  display:block;padding:10px 12px;border-radius:8px;
+  color:var(--text);font-weight:500;margin-top:6px
+}
+.menu-dropdown a:hover{background:#f7f7f7}
+.menu-close{font-size:26px;font-weight:700;cursor:pointer;display:block;margin-bottom:12px}
+
+.right-controls{display:flex;align-items:center;gap:10px}
+.cart-link{
+  padding:6px 10px;border-radius:6px;display:inline-flex;align-items:center;
+  font-size:0.9rem;
+}
+.badge{
+  background:var(--accent2);padding:3px 8px;border-radius:999px;
+  margin-left:6px;color:#111;font-weight:800;font-size:11px
+}
+.account-link{
+  padding:6px 8px;border-radius:6px;display:inline-flex;
+  align-items:center;cursor:pointer;font-size:1.1rem;
+}
+
+/* Slider */
+.slider{
+  width:100%;height:320px;border-radius:16px;overflow:hidden;
+  position:relative;margin-top:14px;background:#f7f7f7
+}
+.slider img{
+  width:100%;height:100%;object-fit:cover;position:absolute;
+  opacity:0;transition:.45s;border-radius:16px
+}
+.slider img.active{opacity:1}
+
+.section-title{
+  font-size:1.6rem;margin:20px 0 8px;font-weight:600
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:14px
+}
+.card{
+  background:#fff;border-radius:12px;border:1px solid #eee;
+  overflow:hidden;box-shadow:0 6px 18px rgba(10,10,10,0.03)
+}
+.card img{width:100%;height:160px;object-fit:cover}
+.card-body{padding:12px}
+.price{color:var(--accent2);font-weight:700}
+
+/* Cart */
+.cart-card{
+  display:flex;gap:14px;padding:14px;border-radius:12px;
+  background:#fff;border:1px solid #eee;
+  box-shadow:0 6px 18px rgba(0,0,0,0.04);margin-bottom:12px;align-items:center
+}
+.cart-card img{
+  width:90px;height:90px;object-fit:cover;border-radius:10px
+}
+.qty-btn{
+  padding:8px 14px;background:var(--accent2);color:#fff;border:none;
+  border-radius:9px;cursor:pointer;font-size:0.9rem;
+}
+.remove-btn{
+  background:#eee;color:#111;border:none;border-radius:9px;
+  padding:7px 12px;cursor:pointer;font-size:0.9rem;
+}
+
+/* Form box */
+.form-box{
+  background:#fff;border-radius:14px;border:1px solid #eee;
+  padding:16px;box-shadow:0 6px 18px rgba(0,0,0,0.03);
+}
+
+.toast{
+  position:fixed;right:18px;bottom:18px;background:rgba(0,0,0,0.85);
+  color:#fff;padding:10px 14px;border-radius:10px;opacity:0;
+  transform:translateY(8px);transition:all .28s;z-index:99999;
+  max-width:90vw;font-size:0.9rem;
+}
+.toast.show{opacity:1;transform:translateY(0)}
+
+.modal{
+  position:fixed;inset:0;background:rgba(0,0,0,0.45);
+  display:none;align-items:center;justify-content:center;z-index:10000;
+  padding:12px;
+}
+.modal.show{display:flex}
+.modal .box{
+  background:#fff;padding:18px;border-radius:12px;
+  min-width:300px;max-width:520px;width:100%;
+}
+.small-muted{color:var(--muted);font-size:0.9rem}
+
+/* Loader */
+#pageLoader {
+  position: fixed;
+  inset: 0;
+  background: rgba(255,255,255,0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 20000;
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+#pageLoader.show { display:flex; }
+.loader-box {
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  padding:18px 22px;border-radius:12px;background:#fff;
+  border:1px solid #eee;box-shadow:0 12px 30px rgba(0,0,0,0.08)
+}
+.spinner {
+  width:48px;height:48px;border-radius:50%;
+  border:5px solid rgba(0,0,0,0.08);border-top-color:var(--accent2);
+  animation:spin 1s linear infinite
+}
+@keyframes spin { to { transform:rotate(360deg) } }
+.loader-text{font-weight:700;color:var(--text)}
+
+#mainFooter{
+  background:var(--footer-bg);color:#e6e6e6;
+  padding:42px 0;margin-top:36px
+}
+.footer-grid{
+  display:grid;
+  grid-template-columns:280px 1fr 1fr 320px;
+  gap:28px;
+  width:min(1100px,92%);margin:auto;align-items:start
+}
+.footer-brand h3{color:#fff;margin-bottom:6px;font-size:18px}
+.footer-brand p{color:#c8c9ca;line-height:1.8;font-size:0.95rem}
+.socials{display:flex;gap:12px;margin-top:12px}
+.socials a{
+  width:36px;height:36px;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,0.05);color:#fff;text-decoration:none;
+  font-size:0.9rem;
+}
+.footer-col h4{color:#fff;margin-bottom:12px;font-size:16px}
+.footer-col a{
+  color:#d1d2d3;display:block;margin:8px 0;font-size:0.95rem
+}
+.footer-col a:hover{color:#fff}
+.get-touch p{margin:6px 0;color:#c8c9ca;line-height:1.6;font-size:0.95rem}
+.footer-bottom{
+  border-top:1px solid rgba(255,255,255,0.06);
+  margin-top:26px;padding-top:18px;text-align:center;
+  color:#b9bbbd;font-size:14px
+}
+
+/* ------------ TABLET (<= 980px) ------------ */
+@media(max-width:980px){
+  body{font-size:15px;}
+  .footer-grid{
+    grid-template-columns:1fr 1fr;
+    gap:20px
+  }
+  .footer-brand{order:1}
+  .get-touch{order:2}
+}
+
+/* ------------ MOBILE (<= 720px) ------------ */
+@media(max-width:720px){
+  body{
+    font-size:14px;
+    line-height:1.5;
+  }
+
+  header{
+    padding:6px 0;
+  }
+
+  nav{
+    padding:4px 4px;
+  }
+
+  .brand h2{
+    font-size:0.98rem;
+    max-width:140px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  .container{
+    width:94%;
+  }
+
+  .slider{
+    height:190px;
+    border-radius:14px;
+    margin-top:10px;
+  }
+
+  /* 2 products per row on mobile */
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap:14px;
+  }
+
+  .card{
+    border-radius:16px;
+  }
+
+  .card img{
+    height:160px;
+    object-fit:cover;
+  }
+
+  .card-body{
+    padding:14px 16px;
+  }
+
+  .price{
+    font-size:1.05rem;
+  }
+
+  .card .btn{
+    width:100%;
+    border-radius:999px;
+    padding:9px 12px;
+    font-size:0.85rem;
+  }
+
+  .cart-card{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  .cart-card img{
+    width:140px;
+    height:140px;
+    object-fit:cover;
+    border-radius:14px;
+  }
+
+  .form-box{
+    padding:14px;
+  }
+
+  input,textarea,select{
+    font-size:0.9rem;
+    padding:10px;
+  }
+
+  .btn{
+    font-size:0.9rem;
+  }
+
+  .right-controls{
+    gap:6px;
+  }
+
+  .toast{
+    left:50%;
+    transform:translate(-50%,8px);
+    right:auto;
+    max-width:92vw;
+    text-align:center;
+  }
+
+  .modal .box{
+    min-width:0;
+    max-width:480px;
+    width:100%;
+  }
+
+  #mainFooter{
+    padding:20px 0;
+    margin-top:26px;
+  }
+  .footer-grid{
+    grid-template-columns:1fr;
+    gap:16px;
+    padding:0 4px;
+  }
+  .footer-brand p,
+  .get-touch p,
+  .footer-col a{
+    font-size:0.9rem;
+  }
+}
+/* ===== PRODUCT CARD POLISH ===== */
+.card{
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+.card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 12px 28px rgba(0,0,0,0.08);
+}
+
+.card-body h3{
+  font-size:1.05rem;
+  font-weight:600;
+  line-height:1.3;
+}
+
+.price{
+  font-size:1.2rem;
+}
+
+.small-muted{
+  font-size:0.8rem;
+}
+@media(max-width:720px){
+  .grid{
+    gap:16px;
+  }
+  .card-body{
+    padding:16px;
+  }
+}
+ /* ===== CART LAYOUT ===== */
+.cart-wrap{padding:24px 0}
+
+.cart-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.cart-head-row{
+  display:grid;
+  grid-template-columns: 1fr 200px 120px;
+  font-size:13px;
+  color:#777;
+  padding-bottom:10px;
+  border-bottom:1px solid #e5e5e5;
+}
+
+.cart-row{
+  display:grid;
+  grid-template-columns: 1fr 200px 120px;
+  align-items:center;
+  padding:18px 0;
+  border-bottom:1px solid #eee;
+}
+
+.cart-product{
+  display:flex;
+  gap:16px;
+  align-items:center;
+}
+.cart-product img{
+  width:90px;
+  height:90px;
+  border-radius:12px;
+  object-fit:cover;
+}
+
+.cart-qty{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.cart-qty button{
+  padding:6px 12px;
+  border-radius:8px;
+  border:1px solid #aaa;
+  background:#fff;
+  cursor:pointer;
+}
+.cart-qty .trash{
+  border:none;
+  background:none;
+}
+
+.cart-total{
+  font-weight:600;
+}
+
+/* ===== BOTTOM ===== */
+.cart-bottom{
+  display:grid;
+  grid-template-columns: 1fr 360px;
+  gap:24px;
+  margin-top:30px;
+}
+
+.cart-summary{
+  background:#fff;
+  border:1px solid #eee;
+  border-radius:14px;
+  padding:18px;
+}
+
+.summary-row{
+  display:flex;
+  justify-content:space-between;
+  font-size:18px;
+}
+
+.buy-now-btn{
+  width:100%;
+  margin-top:14px;
+  font-size:1rem;
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:720px){
+  .desktop-only{display:none}
+
+  .cart-row{
+    grid-template-columns:1fr;
+    gap:12px;
+  }
+
+  .cart-total{
+    text-align:right;
+    font-size:16px;
+  }
+
+  .cart-bottom{
+    grid-template-columns:1fr;
+  }
+
+  .cart-product img{
+    width:120px;
+    height:120px;
+  }
+}
+
+.pay-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
+  margin-top:10px;
+}
+
+.pay-box{
+  border:1px solid #ddd;
+  border-radius:12px;
+  padding:14px;
+  display:flex;
+  gap:12px;
+  cursor:pointer;
+  align-items:flex-start;
+  transition:.2s;
+  background:#fff;
+}
+
+.pay-box:hover{
+  border-color:#fb8500;
+  background:#fff7ed;
+}
+
+.pay-box input{
+  margin-top:4px;
+}
+
+.pay-box.active{
+  border-color:#fb8500;
+  background:#fff7ed;
+}
+
+.pay-box.cod{
+  border-style:dashed;
+}
+
+.pay-box{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border:1px solid #ddd;
+  border-radius:12px;
+  padding:14px;
+  cursor:pointer;
+  transition:.2s;
+  background:#fff;
+}
+
+.pay-box:hover{
+  border-color:#fb8500;
+  background:#fff7ed;
+}
+
+.pay-box.active{
+  border-color:#fb8500;
+  background:#fff7ed;
+}
+
+.pay-text{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.pay-box input[type="radio"]{
+  width:18px;
+  height:18px;
+  margin:0;
+  accent-color:#fb8500;
+}
+
+.pay-box.cod{
+  border-style:dashed;
+}
+
+.address-card{
+  display:flex;
+  gap:12px;
+  border:1px solid #ddd;
+  border-radius:14px;
+  padding:14px;
+  margin-bottom:12px;
+  align-items:flex-start;
+}
+
+.addr-left{
+  padding-top:6px;
+}
+
+.addr-body{
+  flex:1;
+}
+
+.addr-actions{
+  display:flex;
+  gap:12px;
+  margin-top:8px;
+}
+
+.addr-actions button{
+  background:none;
+  border:none;
+  color:#fb8500;
+  cursor:pointer;
+  font-size:0.9rem;
+  padding:0;
+}
+
+#addressForm h4{
+  font-size:1rem;
+  font-weight:600;
+}
+
+
+.success-card{
+  background:#fff;
+  border:1px solid #eee;
+  border-radius:16px;
+  padding:30px 22px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.checkmark-circle{
+  width:90px;
+  height:90px;
+  margin:auto;
+}
+
+.checkmark-circle svg{
+  width:100%;
+  height:100%;
+}
+
+.checkmark-circle-bg{
+  fill:none;
+  stroke:#22c55e;
+  stroke-width:3;
+  stroke-dasharray:157;
+  stroke-dashoffset:157;
+  animation:circleDraw .6s ease-out forwards;
+}
+
+.checkmark{
+  fill:none;
+  stroke:#22c55e;
+  stroke-width:4;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  stroke-dasharray:48;
+  stroke-dashoffset:48;
+  animation:checkDraw .4s ease-out forwards;
+  animation-delay:.6s;
+}
+
+@keyframes circleDraw{
+  to{ stroke-dashoffset:0 }
+}
+
+@keyframes checkDraw{
+  to{ stroke-dashoffset:0 }
+}
+
+.order-id-box{
+  margin-top:14px;
+  padding:10px;
+  background:#f8fafc;
+  border-radius:10px;
+  font-size:0.95rem;
+}
+body{
+  background: linear-gradient(
+    180deg,
+    #FFFDF9 0%,
+    #FFF6EC 45%,
+    #FFF2E5 100%
+  );
+}
+
+
+
+
+</style>
+</head>
+<body>
+
+<div id="pageLoader" role="status" aria-live="polite" aria-label="Loading">
+  <div class="loader-box">
+    <div class="spinner" aria-hidden="true"></div>
+    <div class="loader-text">Loading…</div>
+  </div>
+</div>
+
+<header>
+  <div class="container header-row" style="position:relative">
+    <nav>
+      <div class="brand">
+        <div class="hamburger" onclick="toggleMenu()" id="menuBtn" aria-haspopup="true" aria-expanded="false" aria-controls="menuDropdown">
+          <span class="hl"></span>
+          <span class="hl"></span>
+          <span class="hl"></span>
+        </div>
+        <h2>Vaishnav Delights</h2>
+      </div>
+
+      <div class="right-controls">
+        <a href="#" class="cart-link" onclick="switchPage('cartPage');return false;" title="Cart 🛒">Cart 🛒 <span id="cartCount" class="badge">0</span></a>
+        <a href="#" class="account-link" onclick="openAccount();return false;" title="Account 👤">👤</a>
+      </div>
+    </nav>
+
+    <div id="menuDropdown" class="menu-dropdown" aria-hidden="true">
+      <span class='menu-close' onclick='closeMenu()'>✕</span>
+      <a href="#" onclick="switchPage('customerPage'); scrollToSection('home'); closeMenu();return false;">Home</a>
+      <a href="#" onclick="switchPage('customerPage'); scrollToSection('products'); closeMenu();return false;">Products</a>
+      <a href="#" onclick="switchPage('customerPage'); scrollToSection('about'); closeMenu();return false;">About</a>
+      <a href="#" onclick="switchPage('customerPage'); scrollToSection('contact'); closeMenu();return false;">Contact</a>
+      <a href="#" onclick="switchPage('ordersPage'); closeMenu();return false;">My Orders</a>
+      <a href="#" onclick="switchPage('trackPage'); closeMenu();return false;">Track Order</a>
+
+      <a href="#" id="loginMenuLink" onclick="switchPage('loginPage'); closeMenu();return false;">Login</a>
+      <a href="#" id="accountMenuLink" style="display:none" onclick="switchPage('accountPage'); closeMenu();return false;">Account</a>
+      <a href="#" id="adminMenuLink" style="display:none" onclick="switchPage('adminPage'); closeMenu();return false;">Admin</a>
+      <a href="#" onclick="showShippingPolicy(); closeMenu();return false;">Shipping Policy</a>
+    </div>
+  </div>
+</header>
+
+<div id="customerPage" class="page show">
+  <div class="container" id="home" style="margin-top:18px">
+    <div class="slider" id="slider">
+      <img src="thekua1.jpg" class="active" alt="Premium Thekua">
+      <img src="thekua2.jpg" alt="Ghee Special Thekua">
+      <img src="thekua3.jpg" alt="Jaggery Thekua">
+      <img src="Slider1.jpg" alt="Thekua - Traditional Snack">
+      <img src="Slider2.jpg" alt="Vaishnav Store Products">
+    </div>
+
+    <section id="products">
+      <h2 class="section-title">Our Products</h2>
+      <div class="grid" id="productList"></div>
+    </section>
+
+    <section id="about" style="margin-top:18px">
+      <h2 class="section-title">About Us</h2>
+      <div class="form-box" style="border-radius:12px;padding:14px">
+        <p>
+          Vaishnav delights was born from a very simple thought – <strong>“Ghar jaisa Thekua, har sheher tak kaise pohuchaye?”</strong><br><br>
+          In many Indian homes, Thekua is not just a snack, it is an emotion – made in small batches, shared with family, and remembered for years.
+          But slowly, busy schedules and fast food replaced these traditional flavours. Vaishnav delights started with the aim of keeping this beautiful part of our culture alive, in a pure and honest way.<br><br>
+          Every batch of Vaishnavv Thekua is <strong>handcrafted</strong> using simple ingredients – whole wheat flour, pure ghee, and jaggery or sugar – just like it is made in traditional homes. No shortcuts, no compromise. We don’t chase trends; we focus on <strong>taste, freshness and trust</strong>.<br><br>
+          From a small kitchen idea to serving customers across cities, our journey has been driven by:
+        </p>
+        <ul style="margin:8px 0 0 18px;">
+          <li><strong>Authenticity:</strong> Original recipe inspired by traditional Bihar-style Thekua.</li>
+          <li><strong>Quality:</strong> Carefully selected ingredients, hygienic preparation and safe packing.</li>
+          <li><strong>Emotion:</strong> A product that reminds you of home, festivals and family moments.</li>
+        </ul>
+        <p style="margin-top:10px;">
+          With every box of Vaishnav delights Thekua, we want you to feel that someone made it specially for you – just like family does.<br><br>
+          <strong>Vaishnav delights – Sweetness Rooted in Tradition.</strong>
+        </p>
+      </div>
+    </section>
+
+    <section id="contact" style="margin-top:18px">
+      <h2 class="section-title">Contact</h2>
+      <div class="form-box" style="border-radius:12px;padding:14px">
+        <p><strong>Phone:</strong> +91 6261052844</p>
+        <p><strong>Email:</strong> vaishnavdelights@gmail.com</p>
+      </div>
+    </section>
+
+    <section id="feedback" style="margin-top:18px">
+      <h2 class="section-title">Feedback</h2>
+      <div class="form-box" style="border-radius:12px;padding:14px">
+        <p class="small-muted">Your feedback helps us improve. Share your experience or suggestions.</p>
+        <textarea id="feedbackText" placeholder="Write your feedback here..." rows="3"></textarea>
+        <button class="btn" style="margin-top:8px;width:100%" onclick="sendFeedback()">Send on WhatsApp</button>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div id="cartPage" class="page">
+  <div class="container cart-wrap">
+
+    <div class="cart-head-row desktop-only">
+      <span>Product</span>
+      <span>Quantity</span>
+      <span>Total</span>
+    </div>
+
+    <div id="cartItems"></div>
+
+    <div class="cart-bottom">
+      <div class="cart-note">
+        <label>Order special instructions</label>
+        <textarea id="orderNote" rows="4"></textarea>
+      </div>
+
+      <div class="cart-summary">
+        <div class="summary-row">
+          <span>Estimated total</span>
+          <strong>₹<span id="totalBill">0</span></strong>
+        </div>
+
+        <p class="small-muted">
+          Taxes, discounts and shipping calculated at checkout.
+        </p>
+
+        <button class="btn buy-now-btn" onclick="goCheckout()">
+          BUY NOW
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<div id="checkoutAddressPage" class="page">
+  <div class="container" style="max-width:720px;margin-top:20px">
+
+    <div class="form-box">
+      <h3>Delivery Address</h3>
+
+      <!-- SAVED ADDRESS LIST -->
+      <div id="savedAddressList"></div>
+
+      <!-- ADD NEW ADDRESS BUTTON -->
+      <button class="btn"
+  id="addNewAddrBtn"
+  style="background:#eee;color:#111;margin-top:12px"
+  onclick="showAddressForm()">
+  + Add New Address
+</button>
+
+      <!-- CONTINUE BUTTON -->
+             <button class="btn"
+  id="continuePayBtn"
+  style="width:100%;margin-top:14px"
+  onclick="continueWithSelectedAddress()">
+  Continue to Payment
+</button>
+
+
+
+      <!-- ADDRESS FORM (HIDDEN) -->
+
+      <div id="addressForm" style="display:none;margin-top:16px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+  <h4 style="margin:0">Add New Address</h4>
+
+  <span
+    onclick="cancelAddAddress()"
+    style="font-size:22px;cursor:pointer;font-weight:600">
+    ✕
+  </span>
+</div>
+
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <input id="co_fname" placeholder="First Name">
+          <input id="co_lname" placeholder="Last Name">
+        </div>
+        <input
+  id="co_phone"
+  type="tel"
+  placeholder="Mobile Number"
+  maxlength="10"
+/>
+
+
+        <input id="co_house" placeholder="Flat / House / Building">
+        <input id="co_area" placeholder="Area / Street / Village">
+        <input id="co_landmark" placeholder="Landmark (Optional)">
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <input id="co_city" placeholder="City">
+          <input id="co_state" placeholder="State">
+        </div>
+
+        <input id="co_pincode" placeholder="Pincode">
+
+        <label>Address Type</label>
+        <div style="display:flex;gap:12px">
+          <label><input type="radio" name="addrType" value="Home" checked> Home</label>
+          <label><input type="radio" name="addrType" value="Office"> Office</label>
+          <label><input type="radio" name="addrType" value="Other"> Other</label>
+        </div>
+
+        <button class="btn" style="margin-top:10px" onclick="saveAddressAndContinue()">
+          Save Address
+        </button>
+        <button class="btn"
+  style="background:#eee;color:#111;margin-top:8px"
+  onclick="cancelAddAddress()">
+  Cancel
+</button>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="checkoutPaymentPage" class="page">
+  <div class="container" style="max-width:520px;margin-top:24px">
+
+    <div class="form-box">
+      <h3>Select Payment Method</h3>
+
+      <div class="pay-grid">
+
+        <!-- UPI -->
+        <div class="pay-box active" onclick="selectPay('upi')">
+          <div class="pay-text">
+            <strong>UPI</strong>
+            <p class="small-muted">Google Pay, PhonePe, BHIM, Paytm UPI</p>
+          </div>
+          <input type="radio" name="pay" value="upi" checked>
+        </div>
+
+        <!-- CARD -->
+        <div class="pay-box" onclick="selectPay('card')">
+          <div class="pay-text">
+            <strong>Debit / Credit Card</strong>
+            <p class="small-muted">Visa, Mastercard, RuPay</p>
+          </div>
+          <input type="radio" name="pay" value="card">
+        </div>
+
+        <!-- WALLET -->
+        <div class="pay-box" onclick="selectPay('wallet')">
+          <div class="pay-text">
+            <strong>Wallet</strong>
+            <p class="small-muted">Paytm, PhonePe Wallet</p>
+          </div>
+          <input type="radio" name="pay" value="wallet">
+        </div>
+
+        <!-- COD -->
+        <div class="pay-box cod" onclick="selectPay('cod')">
+          <div class="pay-text">
+            <strong>Cash on Delivery</strong>
+            <p class="small-muted">₹40 COD charge</p>
+          </div>
+          <input type="radio" name="pay" value="cod">
+        </div>
+
+      </div>
+
+      <p id="codNote" class="small-muted" style="display:none;margin-top:8px">
+        ₹40 Cash on Delivery charge added
+      </p>
+
+      <!-- TOTAL (LEFT - RIGHT) -->
+      <div class="summary-row" style="margin-top:16px">
+        <strong>Total</strong>
+        <strong>₹<span id="finalTotal">0</span></strong>
+      </div>
+
+      <button class="btn" style="width:100%;margin-top:14px"
+        onclick="confirmOrder()">
+        Place Order
+      </button>
+
+    </div>
+
+  </div>
+</div>
+
+
+  
+
+
+<div id="ordersPage" class="page">
+  <div class="container" style="max-width:720px;padding-top:22px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h2>My Orders</h2>
+    </div>
+    <div class="form-box" style="margin-top:12px">
+      <div id="ordersListContainer"></div>
+    </div>
+  </div>
+</div>
+
+<div id="trackPage" class="page">
+  <div class="container" style="max-width:720px;padding-top:22px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h2>Track Your Order</h2>
+    </div>
+    <div class="form-box" style="margin-top:12px">
+      <p class="small-muted">Enter your order ID to check status (example: ORD1632...)</p>
+      <input id="trackOrderId" placeholder="Order ID (e.g. ORD1623456789)">
+      <!-- Replace these two buttons in the Track page -->
+<div style="display:flex;gap:8px;margin-top:8px">
+  <button id="trackBtn" class="btn" type="button">Track</button>
+  <button id="pickRecentBtn" class="btn" style="background:#eee;color:#111" type="button">Pick Recent</button>
+</div>
+
+      <div id="trackResult" style="margin-top:12px"></div>
+    </div>
+  </div>
+</div>
+
+<div id="accountPage" class="page">
+  <div class="container" style="max-width:720px;margin-top:24px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h2>My Account</h2>
+    </div>
+
+    <div class="form-box">
+      <p><strong>Name:</strong> <span id="accName">Guest</span></p>
+      <p><strong>Email:</strong> <span id="accEmail">guest</span></p>
+      <p><strong>Role:</strong> <span id="accRole">guest</span></p>
+
+      <div style="margin-top:14px;display:flex;gap:8px">
+        <button class="btn" onclick="gotoOrders()">View Orders</button>
+        <button class="btn" style="background:#eee;color:#111" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="loginPage" class="page">
+  <div class="container" style="max-width:420px;margin-top:36px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h2>Login</h2>
+    </div>      
+    <div style="display:flex;gap:8px;margin:8px 0;">
+      <button class="btn" onclick="setLoginMode('password')">Password</button>
+      <button class="btn" style="background:#eee;color:#111" onclick="setLoginMode('code')">Email Code</button>
+    </div>
+
+    <div id="loginPasswordUI">
+      <input id="log_email" type="email" placeholder="Email">
+      <div style="position:relative;">
+  <input id="log_pass" type="password" placeholder="Password" style="width:100%; padding-right:40px;">
+  
+  <span id="log_pass_eye"
+        onclick="togglePassword('log_pass','log_pass_eye')" 
+        style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:17px;">
+     👁
+  </span>
+</div>
+
+      <button class="btn" style="width:100%;margin-top:8px" onclick="loginWithPassword()">Login</button>
+    </div>
+
+    <div id="loginCodeUI" style="display:none">
+      <input id="login_otp_email" type="email" placeholder="Email (for code)">
+      <button class="btn" style="width:100%;margin-top:8px" onclick="sendLoginOTP()">Send Code</button>
+    </div>
+
+    <p id="log_msg" style="color:#e11d48;margin-top:8px"></p>
+    <div style="display:flex;justify-content:space-between;margin-top:10px">
+      <small>New user? <a href="#" onclick="switchPage('signupPage');return false;">Create</a></small>
+      <small><a href="#" onclick="switchPage('forgotPage');return false;">Forgot?</a></small>
+    </div>
+  </div>
+</div>
+
+<div id="signupPage" class="page">
+  <div class="container" style="max-width:420px;margin-top:36px">
+    <h2>Signup</h2>
+    <input id="su_name" placeholder="Full Name">
+    <input id="su_email" type="email" placeholder="Email">
+    <div style="position:relative;">
+  <input id="su_pass" type="password" placeholder="Create Password" style="width:100%; padding-right:40px;">
+  
+  <span id="su_pass_eye"
+        onclick="togglePassword('su_pass','su_pass_eye')" 
+        style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:17px;">
+     👁
+  </span>
+</div>
+
+
+    <button class="btn" style="width:100%;margin-top:8px" onclick="signupWithOTP()">Signup (Code)</button>
+    <p id="sign_msg" style="color:#22c55e;margin-top:8px"></p>
+    <p style="margin-top:8px">Already have account? <a href="#" onclick="switchPage('loginPage');return false;">Login</a></p>
+  </div>
+</div>
+
+<div id="forgotPage" class="page">
+  <div class="container" style="max-width:420px;margin-top:36px">
+    <h2>Help / Forgot</h2>
+    <p class="small-muted">Login via password or code. If you lost email access contact support.</p>
+    <label>Email</label>
+    <input id="forgot_email" type="email" placeholder="Enter your registered email">
+    <button class="btn" onclick="forgotPassword()" style="margin-top:6px">Send Reset Code</button>
+    <p id="forgot_msg" style="color:#22c55e;margin-top:8px"></p>
+    <p style="margin-top:8px"><a href="#" onclick="switchPage('loginPage');return false;">Back to Login</a></p>
+  </div>
+</div>
+
+<div id="adminPage" class="page">
+  <div class="container" style="padding-top:22px">
+    <button class="btn" onclick="switchPage('customerPage')">← Back</button>
+    <h2>Admin Dashboard</h2>
+    <div id="adminOrders" style="margin-top:12px"></div>
+    <p class="small-muted" style="margin-top:12px">(Orders list requires server-side `list_orders` action.)</p>
+  </div>
+</div>
+
+<div id="otpModal" class="modal" aria-hidden="true">
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="otpModalTitle">
+    <h3 id="otpModalTitle">Enter code</h3>
+    <p id="otpModalDesc" style="color:#555;margin-bottom:8px"></p>
+    <input id="otpInput" placeholder="6-digit code" style="margin-bottom:8px">
+    <div style="display:flex;justify-content:flex-end;gap:8px">
+      <button class="btn" onclick="verifyOtpFromModal()">Verify</button>
+      <button class="btn" style="background:#eee;color:#111" onclick="closeOtpModal()">Cancel</button>
+    </div>
+    <p id="otpErr" style="color:#e11d48;margin-top:8px"></p>
+  </div>
+</div>
+
+<div id="shippingModal" class="modal" aria-hidden="true">
+  <div class="box">
+    <h3>Shipping Policy</h3>
+    <p style="margin-top:8px">
+      Orders are shipped within 1–2 business days. Delivery time:
+      <strong>5 to 7 days</strong> depending on the customer's location and courier availability.
+      Tracking updates will be provided once the order is dispatched. For urgent orders, contact support.
+    </p>
+    <div style="display:flex;justify-content:flex-end;margin-top:12px">
+      <button class="btn" onclick="closeShippingPolicy()">Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="policyModal" class="modal" aria-hidden="true">
+  <div class="box">
+    <h3 id="policyTitle">Policy</h3>
+    <div id="policyBody" style="margin-top:8px; max-height:60vh; overflow:auto; font-size:0.95rem; line-height:1.6;"></div>
+    <div style="display:flex;justify-content:flex-end;margin-top:12px">
+      <button class="btn" onclick="closePolicyModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast" aria-live="polite"></div>
+
+<div id="orderSuccessPage" class="page">
+  <div class="container" style="max-width:520px;margin-top:60px;text-align:center">
+
+    <div class="success-card">
+
+      <div class="checkmark-circle">
+        <svg viewBox="0 0 52 52">
+          <circle class="checkmark-circle-bg" cx="26" cy="26" r="25"/>
+          <path class="checkmark" d="M14 27 l7 7 l17 -17"/>
+        </svg>
+      </div>
+
+      <h2 style="margin-top:14px">Order Placed Successfully 🎉</h2>
+
+      <p class="small-muted" style="margin-top:6px">
+  Thank you, <strong id="successName">Customer</strong>
+</p>
+
+
+      <div class="order-id-box">
+        Order ID: <strong id="successOrderId">---</strong>
+      </div>
+
+      <p class="small-muted" style="margin-top:10px">
+        You will receive confirmation on email.
+      </p>
+
+      <div style="margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn" onclick="gotoOrders()">View My Orders</button>
+        <button class="btn" style="background:#eee;color:#111"
+          onclick="switchPage('customerPage')">
+          Continue Shopping
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<footer id="mainFooter">
+  <div class="footer-grid container" style="padding-top:6px">
+    <div class="footer-brand">
+      <h3>Vaishnav delights</h3>
+      <p>Authentic and pure products delivered to your doorstep. Experience the true taste of tradition.</p>
+      <div class="socials">
+        <a href="https://www.instagram.com/vaishnav_delights?utm_source=qr&igsh=dmZwZzZkd3ppOXhq" aria-label="Instagram">IG</a>
+        <a href="https://youtube.com/@vaishnavdelights?si=28MG6jVpOg5xM9Il" aria-label="YouTube">YT</a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <a href="#" onclick="switchPage('trackPage');return false;">Track Order</a>
+      <a href="#" onclick="showPolicy('refund');return false;">Return & Refund Policy</a>
+      <a href="#" onclick="showPolicy('faq');return false;">FAQ</a>
+      <a href="#" onclick="showPolicy('privacy');return false;">Privacy Policy</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#" onclick="showPolicy('story');return false;">Our Story</a>
+      <a href="#" onclick="switchPage('customerPage'); scrollToSection('contact');return false;">Contact Us</a>
+    </div>
+
+    <div class="get-touch">
+      <h4>Get in Touch</h4>
+      <p>📍404, Block E Aakash Nagar Govind Puram Near CPS International School Ghaziabad 201015.</p>
+      <p>📞+91 6261052844</p>
+      <p>📞+91 8103064650</p>
+      <p>✉ vaishnavdelights@gmail.com</p>
+    </div>
+  </div>
+  <div class="footer-bottom container">
+    © 2025 Vaishnav delights swad. All Rights Reserved.
+  </div>
+</footer>
+
+
+
+<script>
+/* ------------------------- CONFIG ------------------------- */
+const API_URL = "https://script.google.com/macros/s/AKfycbyE59-RejUFh6gOFu0lx6RBXZUZQp-4tawSp0aZIVcUYayMGB8nwgfYk2v66L_4VfsH/exec";
+const RAZORPAY_KEY = "rzp_live_RukjWIITK7i5hU"; // TODO change to your Razorpay key
+
+
+
+
+function addressKey(){
+  return `addresses_${currentUser.email || 'guest'}`;
+}
+function getSavedAddresses(){
+  try{
+    const raw = localStorage.getItem(addressKey());
+    return raw ? JSON.parse(raw) : [];
+  }catch(e){
+    return [];
+  }
+}
+function loadSavedAddresses(){
+  const list = getSavedAddresses();
+  const sel = document.getElementById('savedAddressSelect');
+  if(!sel) return;
+
+  sel.innerHTML = '<option value="">+ Add New Address</option>';
+  list.forEach((a,i)=>{
+    sel.innerHTML += `<option value="${i}">${a.fname} – ${a.city}</option>`;
+  });
+
+  if(list.length) fillSavedAddress(0);
+}
+
+function fillSavedAddress(i){
+  const a = getSavedAddresses()[i];
+  if(!a) return;
+
+  co_fname.value = a.fname;
+  co_lname.value = a.lname;
+  co_house.value = a.house;
+  co_area.value = a.area;
+  co_landmark.value = a.landmark;
+  co_city.value = a.city;
+  co_state.value = a.state;
+  co_pincode.value = a.pincode;
+  document.querySelector(`input[name="addrType"][value="${a.type}"]`).checked = true;
+}
+
+
+
+
+function saveAddress(addr){
+  const list = getSavedAddresses();
+  list.unshift(addr); // latest on top
+  localStorage.setItem(addressKey(), JSON.stringify(list.slice(0,5))); // max 5
+}
+
+function normalizeEmail(e){
+  return String(e || '').trim().toLowerCase();
+}
+
+const products = [
+  {
+    id:1,name:"Premium Thekua",img:"thekua1.jpg",
+    variants: [
+      { key: '250g', label: '250 g', actual:499, offer:299 },
+      { key: '500g', label: '500 g', actual:799, offer:599 },
+      { key: '1kg', label: '1 kg', actual:1499, offer:1299 }
+    ]
+  },
+  {
+    id:2,name:"Ghee Special Thekua",img:"thekua2.jpg",
+    variants: [
+       { key: '250g', label: '250 g', actual:499, offer:299 },
+      { key: '500g', label: '500 g', actual:799, offer:599 },
+      { key: '1kg', label: '1 kg', actual:1499, offer:1299 }
+    ]
+  },
+  {
+    id:3,name:"Jaggery Thekua",img:"thekua3.jpg",
+    variants: [
+       { key: '250g', label: '250 g', actual:499, offer:299 },
+      { key: '500g', label: '500 g', actual:799, offer:599 },
+      { key: '1kg', label: '1 kg', actual:1499, offer:1299 }
+    ]
+  },
+  {
+    id:4,name:"Dry Fruit Thekua",img:"thekua4.jpg",
+    variants: [
+       { key: '250g', label: '250 g', actual:499, offer:299 },
+      { key: '500g', label: '500 g', actual:799, offer:599 },
+      { key: '1kg', label: '1 kg', actual:1499, offer:1299 }
+    ]
+  }
+];
+
+let currentUser = {email:'guest',role:'guest',name:'Guest'};
+let cart = [];
+let wishlist = [];
+let qtyDefaults = {1:0,2:0,3:0,4:0};
+let selectedVariant = {1:'1kg',2:'1kg',3:'1kg',4:'1kg'};
+
+/* ------------------------- UTILS ------------------------- */
+function showLoader(text='Loading…'){
+  try{
+    const l=document.getElementById('pageLoader');
+    if(!l) return;
+    l.classList.add('show');
+    if(text){
+      const t=l.querySelector('.loader-text');
+      if(t) t.innerText = text;
+    }
+  }catch(e){}
+}
+function hideLoader(){
+  try{
+    const l=document.getElementById('pageLoader');
+    if(!l) return;
+    l.classList.remove('show');
+  }catch(e){}
+}
+
+async function apiCall(payload, { showLoading=true, loadingText='Loading…' } = {}) {
+  if(showLoading) showLoader(loadingText);
+  try {
+    const p = {};
+    for(const k in payload){
+      p[k] = (typeof payload[k] === 'object') ? JSON.stringify(payload[k]) : String(payload[k] ?? '');
+    }
+    const body = new URLSearchParams(p).toString();
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+      body
+    });
+    const txt = await res.text();
+    try { return JSON.parse(txt); } catch(e) { return { status:'error', message:'Invalid JSON from server: '+txt }; }
+  } catch(err){
+    console.error('apiCall error', err);
+    return { status:'error', message: String(err) };
+  } finally {
+    if(showLoading) hideLoader();
+  }
+}
+
+function showToast(msg, ms=2600){
+  const t=document.getElementById('toast'); if(!t) return;
+  t.innerText=msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t=setTimeout(()=>t.classList.remove('show'), ms);
+}
+
+function showModal(title, desc, onVerifyCallback, prefill=''){
+  window._otpCallback = onVerifyCallback;
+  const mTitle = document.getElementById('otpModalTitle');
+  const mDesc = document.getElementById('otpModalDesc');
+  const inp = document.getElementById('otpInput');
+  const err = document.getElementById('otpErr');
+  if(mTitle) mTitle.innerText = title;
+  if(mDesc) mDesc.innerText = desc;
+  if(inp) inp.value = prefill;
+  if(err) err.innerText = '';
+  const m = document.getElementById('otpModal');
+  if(m){
+    m.classList.add('show');
+    m.setAttribute('aria-hidden','false');
+  }
+  setTimeout(()=>{ try{ document.getElementById('otpInput').focus(); }catch(e){} },120);
+}
+function closeOtpModal(){
+  const m=document.getElementById('otpModal');
+  if(m){
+    m.classList.remove('show');
+    m.setAttribute('aria-hidden','true');
+  }
+  window._otpCallback = null;
+}
+function showShippingPolicy(){
+  document.getElementById('shippingModal').classList.add('show');
+  document.getElementById('shippingModal').setAttribute('aria-hidden','false');
+}
+function closeShippingPolicy(){
+  document.getElementById('shippingModal').classList.remove('show');
+  document.getElementById('shippingModal').setAttribute('aria-hidden','true');
+}
+
+/* Policy modal content */
+function showPolicy(type){
+  const modal = document.getElementById('policyModal');
+  const titleEl = document.getElementById('policyTitle');
+  const bodyEl = document.getElementById('policyBody');
+  if (!modal || !titleEl || !bodyEl) return;
+
+  let title = 'Policy';
+  let html = '';
+
+  if (type === 'refund') {
+    title = 'Return & Refund Policy';
+    html = `
+      
+      <p>At Vaishnav Store, we pack every order with care to ensure you receive fresh, safe, and high-quality products. Since we sell food items, we do not accept general returns due to hygiene and safety reasons. However, we will issue a replacement or refund if there is a genuine issue with your order.</p>
+      <h4>1. When are returns or refunds applicable?</h4>
+      <ul>
+        <li>Product was <strong>damaged during transit</strong></li>
+        <li><strong>Wrong product / quantity / size / flavor</strong> delivered</li>
+        <li>One or more items are <strong>missing</strong> from the order</li>
+      </ul>
+      <p>Change of mind, taste preference, or minor shape variations do not qualify for a return or refund.</p>
+      <h4>2. Time frame for reporting an issue</h4>
+      <p>You must contact us <strong>within 24 hours of delivery</strong>. Complaints received after 24 hours may not be eligible.</p>
+      <h4>3. Contact</h4>
+      <p>📞 +91 6261052844 / +91 8103064650 / +91 7050520404<br>✉ support@vaishnavstore.com</p>
+    `;
+  } else if (type === 'privacy') {
+    title = 'Privacy Policy';
+    html = `
+      <p>Vaishnav Store (“we”, “our”, “us”) is committed to protecting your personal information and ensuring a safe online shopping experience.</p>
+    `;
+  } else if (type === 'faq') {
+    title = 'FAQ';
+    html = `
+      <h4>Frequently Asked Questions</h4>
+      <p><strong>Delivery time?</strong> Usually 5–7 days depending on location.</p>
+      <p><strong>Do you ship all over India?</strong> Yes, wherever courier service is available.</p>
+    `;
+  } else if (type === 'story') {
+    title = 'Our Story';
+    html = `
+      <p><strong>Family recipe. Handmade tradition.</strong></p>
+      <p>★ Our Story – Vaishnav Delights Thekua ★</p>
+
+<p>Growing up, festivals were never just dates on the calendar — they were moments filled with warmth, laughter, and the irresistible aroma of desi ghee and jaggery coming from the kitchen. Among all the festive treats, Thekua had a special place in our hearts. Made by our grandmother’s loving hands, it wasn’t just a sweet snack — it was a bundle of blessings, emotions, and tradition.
+
+As time passed and life moved us to new places, one thing remained unforgettable —
+that homely taste of tradition.
+
+To preserve this legacy and bring the authentic flavor of our culture to every home,
+Vaishnav Delights – Thekua was born.
+
+We are committed to offering you not just a product, but a pure, traditional experience, crafted just like it has been in our families for generations:
+<p><strong>✔ No preservatives</strong></p>
+<p><strong>✔ Made with pure desi ghee & jaggery</strong></p>
+<p><strong>✔ Authentic homemade taste</strong></p>
+
+Every Thekua is handcrafted with care, just the way our grandmothers lovingly made it for us.
+
+Today, at Vaishnav Delights, our Thekua isn’t merely a sweet —
+it is culture, memory, and love — packed into every bite.</p>
+    `;
+  }
+
+  titleEl.innerText = title;
+  bodyEl.innerHTML = html;
+  modal.classList.add('show');
+  modal.setAttribute('aria-hidden', 'false');
+}
+function closePolicyModal(){
+  const modal = document.getElementById('policyModal');
+  if (!modal) return;
+  modal.classList.remove('show');
+  modal.setAttribute('aria-hidden', 'true');
+}
+
+/* ------------------------- PAGES & HISTORY ------------------------- */
+function hideAllPages(){ document.querySelectorAll('.page').forEach(p=>p.classList.remove('show')); }
+function scrollToSection(id){ setTimeout(()=>{ document.getElementById(id)?.scrollIntoView({behavior:'smooth'}); },120); }
+
+function switchPage(id, fromPopstate = false){
+  hideAllPages();
+  const el = document.getElementById(id || 'customerPage');
+  if(el) el.classList.add('show');
+
+  const titles = {
+    "customerPage": "Vaishnav Delights — Buy Pure & Authentic Thekua Online in India",
+    "cartPage": "Your Shopping Cart — Vaishnav Delights",
+    "accountPage": "My Account — Vaishnav Delights",
+    "loginPage": "Login — Vaishnav Delights",
+    "signupPage": "Signup — Vaishnav Delights",
+    "trackPage": "Track Order — Vaishnav Delights",
+    "ordersPage": "My Orders — Vaishnav Delights",
+    "forgotPage": "Forgot Password — Vaishnav Delights",
+    "adminPage": "Admin — Vaishnav Delights"
+  };
+  document.title = titles[id] || "Vaishnav Delights — Buy Pure & Authentic Thekua Online in India";
+
+  const footer = document.getElementById('mainFooter');
+  if(footer){
+    if(id==='loginPage' || id==='signupPage' || id==='forgotPage')
+      footer.style.display='none';
+    else
+      footer.style.display='block';
+  }
+
+  if(id==='customerPage') renderProducts();
+  if(id==='cartPage') renderCart();
+  if(id==='adminPage') renderAdminOrders();
+  if(id==='ordersPage') renderOrdersPage();
+
+  updateAccountUI();
+  closeOtpModal();
+  closeMenu();
+
+  if (!fromPopstate) {
+    history.pushState({ page: id }, '', window.location.pathname);
+  }
+}
+
+function toggleMenu(){
+  const dd = document.getElementById('menuDropdown');
+  const btn = document.getElementById('menuBtn');
+  if(!dd) return;
+  const open = dd.classList.toggle('open');
+  dd.setAttribute('aria-hidden', !open);
+  btn.setAttribute('aria-expanded', open);
+  updateMenuItems();
+}
+function closeMenu(){
+  const dd = document.getElementById('menuDropdown');
+  const btn = document.getElementById('menuBtn');
+  if(!dd) return;
+  dd.classList.remove('open');
+  dd.setAttribute('aria-hidden','true');
+  if(btn) btn.setAttribute('aria-expanded','false');
+}
+document.addEventListener('change', function(e){
+  if(e.target.name === 'pay'){
+    let total = window._checkoutTotal || calculateCartTotal();
+
+    if(e.target.value === 'cod'){
+      total += 40;
+    }
+
+    document.getElementById('finalTotal').innerText = total;
+  }
+});
+
+window.addEventListener('popstate', function (event) {
+  const pageId = event.state && event.state.page ? event.state.page : 'customerPage';
+  switchPage(pageId, true);
+});
+
+/* ------------------------- MENU VISIBILITY ------------------------- */
+function updateMenuItems(){
+  const loginMenu = document.getElementById('loginMenuLink');
+  const accountMenu = document.getElementById('accountMenuLink');
+  const adminMenu = document.getElementById('adminMenuLink');
+  const isGuest = !currentUser || !currentUser.email || currentUser.email==='guest';
+
+  if(loginMenu) loginMenu.style.display = isGuest ? 'block' : 'none';
+  if(accountMenu) accountMenu.style.display = isGuest ? 'none' : 'block';
+  if(adminMenu) adminMenu.style.display = (currentUser.role === 'admin') ? 'block' : 'none';
+
+  let logoutEl = document.getElementById('menuLogout');
+  if(!isGuest && !logoutEl){
+    const a = document.createElement('a');
+    a.href='#';
+    a.id='menuLogout';
+    a.innerText='Logout';
+    a.onclick = function(){
+      logout(); closeMenu(); return false;
+    };
+    document.getElementById('menuDropdown').appendChild(a);
+  } else if(isGuest && logoutEl){
+    logoutEl.remove();
+  }
+}
+
+function openAccount(){
+  const isGuest = !currentUser || !currentUser.email || currentUser.email === 'guest';
+  if(isGuest){
+    switchPage('loginPage');
+  } else {
+    switchPage('accountPage');
+  }
+}
+
+/* ------------------------- STORAGE ------------------------- */
+function cartKey(){ return `cart_${currentUser.email||'guest'}`; }
+function ordersKey(){ return `myorders_${currentUser.email||'guest'}`; }
+function saveCart(){ try{ localStorage.setItem(cartKey(), JSON.stringify(cart)); }catch(e){} }
+function loadCart(){ try{ const d=localStorage.getItem(cartKey()); cart = d?JSON.parse(d):[] }catch(e){cart=[]} updateCounters(); }
+function saveMyOrders(orders){ try{ localStorage.setItem(ordersKey(), JSON.stringify(orders)); }catch(e){} }
+function loadMyOrders(){ try{ const d=localStorage.getItem(ordersKey()); return d?JSON.parse(d):[] }catch(e){return []} }
+function saveWish(){ try{ localStorage.setItem('wish_'+(currentUser.email||'guest'), JSON.stringify(wishlist)); }catch(e){} }
+function loadWish(){ try{ const d=localStorage.getItem('wish_'+(currentUser.email||'guest')); wishlist = d?JSON.parse(d):[] }catch(e){wishlist=[]} updateCounters(); }
+
+function updateCounters(){
+  const c=document.getElementById('cartCount'); if(!c) return;
+  const totalQty = cart.reduce((sum, it) => sum + (Number(it.q) || 0), 0);
+  c.innerText = totalQty;
+}
+
+/* ------------------------- ensure updateAccountUI exists (permanent) ------------------------- */
+function updateAccountUI(){
+  try{
+    const nameEl = document.getElementById('accName');
+    const emailEl = document.getElementById('accEmail');
+    const roleEl = document.getElementById('accRole');
+
+    if((!window.currentUser || !window.currentUser.email) && localStorage.getItem('email')){
+      window.currentUser = {
+        email: localStorage.getItem('email'),
+        role: localStorage.getItem('role') || 'customer',
+        name: localStorage.getItem('name') || (localStorage.getItem('email')||'').split('@')[0]
+      };
+    }
+
+    if(nameEl) nameEl.innerText = (window.currentUser && window.currentUser.name) ? window.currentUser.name : 'Guest';
+    if(emailEl) emailEl.innerText = (window.currentUser && window.currentUser.email) ? window.currentUser.email : 'guest';
+    if(roleEl) roleEl.innerText = (window.currentUser && window.currentUser.role) ? window.currentUser.role : 'guest';
+
+    if(typeof updateMenuItems === 'function') try{ updateMenuItems(); }catch(e){console.warn('updateMenuItems error',e);}
+
+    if(document.getElementById('ordersListContainer') && typeof showMyOrdersList === 'function'){
+      try{ showMyOrdersList(); }catch(e){ /* ignore */ }
+    }
+  }catch(err){
+    console.error('updateAccountUI error', err);
+  }
+}
+
+/* ------------------------- ORDERS PAGE / TRACKING ------------------------- */
+async function showMyOrdersList(){
+  const container = document.getElementById('ordersListContainer');
+  if(!container) return;
+
+  if(!currentUser.email || currentUser.email==='guest'){
+    container.innerHTML = '<p class="small-muted">Please login to view orders.</p>';
+    return;
+  }
+
+  container.innerHTML = '<p class="small-muted">Loading orders...</p>';
+
+  try {
+    const data = await apiCall({
+  action: 'list_orders_by_email',
+  email: normalizeEmail(currentUser.email)
+}, { showLoading:false });
+
+    if(!data || data.status!=='ok' || !Array.isArray(data.orders)){
+      container.innerHTML = '<p class="small-muted">No orders found.</p>';
+      return;
+    }
+
+    const orders = data.orders;
+
+    const formatCart = (cartData) => {
+      try {
+        const arr = (typeof cartData === 'string') ? JSON.parse(cartData) : cartData;
+        if(!Array.isArray(arr)) return '';
+        return arr.map(i => {
+          const name = i.displayName || i.name || 'Item';
+          const q = i.q || i.qty || i.quantity || 1;
+          const price = (i.price != null) ? ` — ₹${i.price}` : '';
+          return `${name} × ${q}${price}`;
+        }).join(', ');
+      } catch (e) {
+        return '';
+      }
+    };
+
+    
+    container.innerHTML = orders.map(o => {
+
+  const cartSummary = formatCart(o.cart || []);
+
+  const statusRaw = o.status ?? 'Placed';
+  const payRaw = o.payment ?? '';
+  const ts = o.timestamp || '';
+  const total = o.total != null ? ` — ₹${o.total}` : '';
+
+  // 🔒 SAFE string conversion (ERROR FIX)
+  const cleanStatus = String(statusRaw).trim().toLowerCase();
+  const cleanPay = String(payRaw).trim().toLowerCase();
+
+  /* ❌ CANCEL (before dispatch) */
+  const canCancel =
+    cleanPay === 'cod' &&
+    (cleanStatus === 'placed' || cleanStatus === 'packed');
+
+  /* 🔁 RETURN (within 48 hrs after delivered) */
+  let canReturn = false;
+  if (cleanStatus === 'delivered' && o.delivered_at) {
+    const deliveredAt = new Date(o.delivered_at);
+    if (!isNaN(deliveredAt)) {
+      const diffHrs =
+        (Date.now() - deliveredAt.getTime()) / (1000 * 60 * 60);
+      canReturn = diffHrs <= 48;
+    }
+  }
+
+  return `
+    <div style="padding:10px;border:1px solid #eee;border-radius:8px;margin-bottom:8px">
+      <strong>${o.order_id}</strong>${total}
+      <br><small>${ts}</small>
+
+      <div style="margin-top:6px">
+        <strong>${statusRaw}</strong>
+        ${cleanPay ? `<span style="color:#666;font-size:0.85rem;">(${cleanPay.toUpperCase()})</span>` : ''}
+      </div>
+
+      ${cartSummary ? `
+        <div style="margin-top:8px;color:var(--muted)">
+          ${cartSummary}
+        </div>` : ''}
+
+      ${(canCancel || canReturn) ? `
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+
+          ${canCancel ? `
+            <button class="btn"
+              style="background:#fee2e2;color:#b91c1c"
+              onclick="cancelOrderFromSite('${o.order_id}')">
+              Cancel Order
+            </button>` : ''}
+
+          ${canReturn ? `
+            <button class="btn"
+              style="background:#fff7ed;color:#c2410c"
+              onclick="returnOrderFromSite('${o.order_id}')">
+              Return Order
+            </button>` : ''}
+
+        </div>` : ''}
+    </div>
+  `;
+}).join('');
+
+
+  } 
+  catch(err){
+    console.error(err);
+    container.innerHTML = '<p class="small-muted">Unable to load orders.</p>';
+  }
+}
+function renderOrdersPage(){ showMyOrdersList(); }
+
+async function cancelOrderFromSite(orderId){
+  if(!confirm('Are you sure you want to cancel this order?')) return;
+  const res = await apiCall({
+    action:'cancel_order',
+    order_id: orderId,
+email: normalizeEmail(currentUser.email)
+  }, { showLoading:true, loadingText:'Cancelling…' });
+
+  if(!res || res.status!=='ok'){
+    showToast(res && res.message ? res.message : 'Unable to cancel order.');
+    return;
+  }
+  showToast('Order cancelled.');
+  setTimeout(() => {
+  showMyOrdersList();
+}, 300);
+}
+
+/* ------------------------- AUTH (SERVER-BACKED) ------------------------- */
+/* Replaces previous local usersDB. Authentication now uses Apps Script API (API_URL).
+   Server must implement actions: send_otp_email, verify_otp_email, signup, login, get_user, signup_update_password. */
+
+async function serverGetUser(email){
+  const res = await apiCall({ action:'get_user', email }, { showLoading:false });
+  if(!res || res.status !== 'ok') return null;
+  return res.user || null;
+}
+
+/* SIGNUP via OTP -> create user on server after OTP verifies */
+async function signupWithOTP(){
+  try {
+    const name = document.getElementById('su_name').value.trim();
+    const email = document.getElementById('su_email').value.trim().toLowerCase();
+    const pass = document.getElementById('su_pass').value;
+
+    if(!name || !email || !pass){
+      document.getElementById('sign_msg').innerText='Fill all fields';
+      return;
+    }
+
+    const existing = await serverGetUser(email);
+    if(existing){
+      document.getElementById('sign_msg').innerText='Account exists. Please login.';
+      return;
+    }
+
+   // 🔄 show loader immediately
+showLoader('Sending code…');
+
+/* 🔥 FIRE-AND-FORGET OTP SEND (do NOT await) */
+apiCall(
+  { action:'send_otp_email', email, purpose:'signup' },
+  { showLoading:false }
+).catch(()=>{});
+
+/* 🚀 hide loader quickly for good UX */
+setTimeout(() => {
+  hideLoader();
+  showToast('Code sent to email');
+}, 600);
+
+  
+
+    showModal(
+      'Enter code',
+      `A code was sent to ${email}. Enter it below.`,
+      async function(code){
+        const ok = await verifyOtpOnServer(email, code, 'signup');
+        if(!ok) return;
+
+        const create = await apiCall(
+          { action:'signup', email, password: pass, name },
+          { showLoading:true, loadingText:'Creating account…' }
+        );
+
+        if(!create || create.status !== 'ok'){
+          showToast('Signup failed');
+          return;
+        }
+
+        localStorage.setItem('email', email);
+        localStorage.setItem('role', create.user.role || 'customer');
+        localStorage.setItem('name', create.user.name || name);
+
+        currentUser = { email, role:'customer', name };
+
+        loadCart();
+        closeOtpModal();
+        showToast('Signup successful');
+        switchPage('customerPage');
+      }
+    );
+
+  } catch(err){
+    console.error(err);
+    hideLoader();
+    showToast('Network error');
+  }
+}
+
+
+function setLoginMode(mode){
+  document.getElementById('loginPasswordUI').style.display = mode==='password' ? 'block' : 'none';
+  document.getElementById('loginCodeUI').style.display = mode==='code' ? 'block' : 'none';
+  document.getElementById('log_msg').innerText = '';
+}
+
+/* LOGIN with password via server */
+async function loginWithPassword(){
+  const email = (document.getElementById('log_email')||{}).value.trim().toLowerCase();
+  const pass = (document.getElementById('log_pass')||{}).value;
+  if(!email || !pass){
+    document.getElementById('log_msg').innerText='Enter credentials'; return;
+  }
+  try{
+    const res = await apiCall({ action:'login', email, password: pass }, { showLoading:true, loadingText:'loading' });
+    if(!res || res.status !== 'ok'){
+      document.getElementById('log_msg').innerText = (res && res.message) ? res.message : 'Login failed';
+      return;
+    }
+    const user = res.user;
+    localStorage.setItem('email', user.email);
+    localStorage.setItem('role', user.role || 'customer');
+    localStorage.setItem('name', user.name || user.email.split('@')[0]);
+    currentUser = { email: user.email, role: localStorage.getItem('role'), name: localStorage.getItem('name') };
+    loadCart(); loadWish(); showToast('Logged in'); switchPage('customerPage');
+  } catch(e){
+    console.error('login error', e);
+    document.getElementById('log_msg').innerText='Network error while logging in.';
+  }
+}
+
+
+
+/* Send login OTP (server-side) */
+async function sendLoginOTP(){
+  const email = (document.getElementById('login_otp_email')||{}).value.trim().toLowerCase();
+  if(!email){
+    document.getElementById('log_msg').innerText='Enter email'; 
+    return;
+  }
+
+  const user = await serverGetUser(email);
+  if(!user){
+    document.getElementById('log_msg').innerText='No account found. Signup first.'; 
+    return;
+  }
+
+  showLoader('Sending code…');
+
+  const d = await apiCall(
+    { action:'send_otp_email', email, purpose:'login' },
+    { showLoading:false }
+  );
+
+  hideLoader();
+
+  if(!d || d.status !== 'ok'){
+    showToast('Failed to send code');
+    return;
+  }
+
+  showToast('Code sent to email');
+
+  showModal('Enter code', `A code was sent to ${email}. Enter it to login.`, async function(code){
+    const ok = await verifyOtpOnServer(email, code, 'login');
+    if(!ok) return;
+
+    localStorage.setItem('email', user.email);
+    localStorage.setItem('role', user.role || 'customer');
+    localStorage.setItem('name', user.name || user.email.split('@')[0]);
+
+    currentUser = { email: user.email, role:'customer', name: localStorage.getItem('name') };
+
+    loadCart(); loadWish();
+    closeOtpModal();
+    showToast('Logged in');
+    switchPage('customerPage');
+  });
+}
+
+
+/* Verify OTP on server */
+async function verifyOtpOnServer(email, code, purpose){
+  try {
+    const data = await apiCall({ action: 'verify_otp_email', email, code, purpose }, { showLoading:true, loadingText:'Verifying…' });
+    if(!data || data.status !== 'ok'){
+      document.getElementById('otpErr').innerText = (data && data.message) || 'Invalid or expired code'; return false;
+    }
+    return true;
+  } catch(e){
+    console.error('verifyOtpOnServer', e);
+    document.getElementById('otpErr').innerText = 'Network error while verifying.';
+    return false;
+  }
+}
+
+async function verifyOtpFromModal(){
+  const code = (document.getElementById('otpInput')||{}).value.trim();
+  if(!code){
+    document.getElementById('otpErr').innerText = 'Enter code'; return;
+  }
+  if(typeof window._otpCallback === 'function'){
+    window._otpCallback(code);
+  } else {
+    document.getElementById('otpErr').innerText = 'No callback';
+  }
+}
+
+/* Forgot / reset - send reset OTP and update password server-side */
+async function forgotPassword(){
+  const em = (document.getElementById('forgot_email')||{}).value.trim().toLowerCase();
+  if(!em){ document.getElementById('forgot_msg').innerText = 'Enter email'; return; }
+  try{
+    const user = await serverGetUser(em);
+    if(!user){ document.getElementById('forgot_msg').innerText = 'Account not found.'; return; }
+
+    const d = await apiCall({ action:'send_otp_email', email: em, purpose:'reset' }, { showLoading:true, loadingText:'Sending reset code…' });
+    if(!d || d.status !== 'ok'){
+      showToast('Failed to send reset code'); return;
+    }
+    showToast('Reset code sent');
+    showModal('Enter code', `A reset code was sent to ${em}. Enter it to set a new password.`, async function(code){
+      document.getElementById('otpErr').innerText = '';
+      const ok = await verifyOtpOnServer(em, code, 'reset');
+      if(!ok) return;
+      const np = prompt('Enter your new password (min 4 characters)');
+      if(!np || np.trim().length < 4){
+        alert('Password should be at least 4 characters.'); return;
+      }
+      // call server endpoint to update password - server must implement 'signup_update_password'
+      const resp = await apiCall({ action:'signup_update_password', email: em, password: np }, { showLoading:true, loadingText:'Updating password…' });
+      if(!resp || resp.status !== 'ok'){
+        showToast('Password update failed: ' + (resp && resp.message || ''));
+        return;
+      }
+      closeOtpModal();
+      showToast('Password updated. Login with new password.');
+      switchPage('loginPage');
+    });
+  }catch(e){
+    console.error(e);
+    document.getElementById('forgot_msg').innerText = 'Network error while sending reset code.';
+  }
+}
+
+/* ------------------------- PRODUCTS & CART ------------------------- */
+function renderProducts(){
+  const el=document.getElementById('productList'); if(!el) return;
+  el.innerHTML = products.map(p=>{
+    const variantsHtml = p.variants.map(v=>{
+      const checked = (selectedVariant[p.id] === v.key) ? 'selected' : '';
+      return `<option value="${v.key}" ${checked}>${v.label}</option>`;
+    }).join('');
+
+    const priceObj = p.variants.find(v=>v.key === selectedVariant[p.id]) || p.variants[0];
+    const saving = (priceObj.actual && priceObj.offer) ? (Number(priceObj.actual) - Number(priceObj.offer)) : 0;
+
+    return `
+      <div class="card">
+        <img src="${p.img}" alt="${p.name}">
+        <div class="card-body">
+          <h3 style="margin:6px 0">${p.name}</h3>
+          <p class="price">₹${priceObj.offer} <small style="text-decoration:line-through;color:#aaa;margin-left:8px">₹${priceObj.actual}</small></p>
+          ${saving > 0 ? `<p class="small-muted">You save ₹${saving}</p>` : ''}
+
+          <label>Choose Size</label>
+          <select onchange="onVariantChange(${p.id}, this.value)">${variantsHtml}</select>
+
+          <div style="margin-top:10px">
+            <button class="btn" onclick="addToCart(${p.id})">Add to Cart</button>
+            
+
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function onVariantChange(productId, variantKey){
+  selectedVariant[productId] = variantKey;
+  renderProducts();
+}
+
+function addToCart(id){
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+
+  const variantKey = selectedVariant[id] || p.variants[0].key;
+  const variant = p.variants.find(v => v.key === variantKey) || p.variants[0];
+
+  const existing = cart.find(x => x.id === p.id && x.variant === variantKey);
+  if (existing) {
+    existing.q = Number(existing.q || 0) + 1;
+  } else {
+    cart.push({
+      id: p.id,
+      name: p.name,
+      displayName: `${p.name} — ${variant.label}`,
+      variant: variant.key,
+      q: 1,
+      price: variant.offer,
+      actual: variant.actual,
+      img: p.img
+    });
+  }
+
+  saveCart();
+  updateCounters();
+  renderCart();
+  showToast(`${p.name} (${variant.label}) added to cart`);
+  switchPage('cartPage');
+}
+
+
+
+function renderCart(){
+  const el = document.getElementById('cartItems');
+  if(!el) return;
+
+  if(!cart || cart.length === 0){
+    el.innerHTML = '<p class="small-muted">Your cart is empty.</p>';
+    updateTotal();
+    return;
+  }
+
+  let html = '';
+
+  cart.forEach((c, idx) => {
+    html += `
+      <div class="cart-row">
+        <div class="cart-product">
+          <img src="${c.img}" alt="${c.name}">
+          <div>
+            <h4>${c.displayName}</h4>
+            <p>₹${c.price}</p>
+          </div>
+        </div>
+
+        <div class="cart-qty">
+          <button onclick="changeQty(${idx},${c.q-1})">−</button>
+          <span>${c.q}</span>
+          <button onclick="changeQty(${idx},${c.q+1})">+</button>
+          <button class="trash" onclick="removeFromCart(${idx})">🗑</button>
+        </div>
+
+        <div class="cart-total">
+          ₹${c.price * c.q}
+        </div>
+      </div>
+    `;
+  });
+
+  el.innerHTML = html;
+  updateTotal();
+}
+
+
+function continueWithSelectedAddress(){
+  if(!window._selectedAddress){
+    showToast('Select an address');
+    return;
+  }
+
+  // ✅ FIX
+  window._checkoutTotal = calculateCartTotal();
+  document.getElementById('finalTotal').innerText = window._checkoutTotal;
+
+  switchPage('checkoutPaymentPage');
+}
+
+
+
+function changeQty(idx,newQ){
+  if(newQ<1) return;
+  cart[idx].q = newQ;
+  saveCart(); renderCart(); updateCounters();
+}
+function removeFromCart(idx){
+  const name = (cart[idx] && cart[idx].displayName) || 'Item';
+  cart.splice(idx,1);
+  saveCart(); renderCart(); updateCounters();
+  showToast(`${name} removed`);
+}
+function updateTotal(){
+  const tb=document.getElementById('totalBill'); if(!tb) return;
+  tb.innerText = cart.reduce((s,p)=>s+Number(p.price)*Number(p.q),0);
+}
+
+     
+
+/* ------------------------- ADMIN ------------------------- */
+async function renderAdminOrders(){
+  if(currentUser.role !== 'admin'){
+    document.getElementById('adminOrders').innerHTML = '<p class="small-muted">Admin access required.</p>'; return;
+  }
+  document.getElementById('adminOrders').innerHTML = '<p class="small-muted">Loading orders...</p>';
+  try{
+    const d = await apiCall({ action: 'list_orders' }, { showLoading:true, loadingText:'Loading orders…' });
+    if(!d || d.status !== 'ok' || !Array.isArray(d.orders)){
+      document.getElementById('adminOrders').innerHTML = '<p class="small-muted">No orders or list endpoint not configured.</p>'; return;
+    }
+    const html = d.orders.map(o => {
+  const status = String(o.status || '').toLowerCase();
+
+  const canDeliver =
+    status === 'dispatched' || status === 'shipped';
+
+  return `
+    <div style="padding:10px;border:1px solid #eee;border-radius:8px;margin-bottom:8px">
+      <strong>${o.order_id}</strong> — ₹${o.total}<br>
+      <small>${o.timestamp}</small>
+
+      <pre style="margin-top:6px;white-space:pre-wrap">${o.cart}</pre>
+
+      <div style="margin-top:6px;">
+        Status: <strong>${o.status || 'Placed'}</strong>
+        | ${o.payment || ''}
+      </div>
+
+      ${canDeliver ? `
+        <div style="margin-top:8px">
+          <button class="btn"
+            onclick="markDelivered('${o.order_id}')">
+            Mark Delivered
+          </button>
+        </div>` : ''}
+    </div>
+  `;
+}).join('');
+
+    document.getElementById('adminOrders').innerHTML = html;
+  }catch(err){
+    console.error(err);
+    document.getElementById('adminOrders').innerHTML = '<p class="small-muted">Unable to load orders.</p>';
+  }
+}
+
+/* ------------------------- SESSION INIT ------------------------- */
+async function loadSession(){
+  showLoader('Preparing app…');
+  try{
+    const email = localStorage.getItem('email');
+    const role = localStorage.getItem('role');
+    const name = localStorage.getItem('name');
+
+    if(email && role){
+      currentUser = { email, role, name: name || email.split('@')[0] };
+    } else {
+      currentUser = { email:'guest', role:'guest', name:'Guest' };
+    }
+
+    loadCart();
+    loadWish();
+    renderProducts();
+    renderCart();
+    updateAccountUI();
+
+    const initialPage = 'customerPage';
+    history.replaceState({ page: initialPage }, '', window.location.pathname);
+    switchPage(initialPage, true);
+  }catch(e){
+    console.error('loadSession err', e);
+  } finally {
+    hideLoader();
+  }
+}
+loadSession();
+
+/* ------------------------- SLIDER & LOGOUT ------------------------- */
+let slide=0;
+setInterval(()=>{
+  const imgs=document.querySelectorAll('#slider img');
+  if(!imgs || imgs.length===0) return;
+  imgs.forEach(i=>i.classList.remove('active'));
+  slide=(slide+1)%imgs.length;
+  imgs[slide].classList.add('active');
+},3500);
+
+function logout(){
+  localStorage.removeItem('email');
+  localStorage.removeItem('role');
+  localStorage.removeItem('name');
+  currentUser = {email:'guest',role:'guest',name:'Guest'};
+  cart=[]; wishlist=[];
+  saveCart(); saveWish();
+  updateCounters(); updateMenuItems();
+  switchPage('customerPage');
+}
+function gotoOrders(){ switchPage('ordersPage'); showToast('Opening your orders...'); }
+
+window._vaish = { products };
+
+/* ------------------------- FEEDBACK VIA WHATSAPP ------------------------- */
+function sendFeedback(){
+  const txt = (document.getElementById('feedbackText')||{}).value || '';
+  const name = currentUser.name || 'Customer';
+  const msg = encodeURIComponent(`Feedback from ${name} (${currentUser.email || 'guest'}):\n\n${txt}`);
+  window.open('https://wa.me/916261052844?text=' + msg, '_blank');
+}
+function togglePassword(inputId, eyeId) {
+  const input = document.getElementById(inputId);
+  const eye = document.getElementById(eyeId);
+
+  if (input.type === "password") {
+    input.type = "text";
+    eye.textContent = "🙈"; // hide icon
+  } else {
+    input.type = "password";
+    eye.textContent = "👁"; // show icon
+  }
+}
+/* ------------------ Track functions + button bindings (PATCH) ------------------ */
+
+async function trackOrder(){
+  const idEl = document.getElementById('trackOrderId');
+  const container = document.getElementById('trackResult');
+  if(!container) return;
+  const id = (idEl?.value || '').toString().trim();
+  container.innerHTML = '';
+  if(!id){
+    container.innerHTML = '<p class="small-muted">Enter order ID to track.</p>';
+    return;
+  }
+
+  // show immediate UI feedback
+  container.innerHTML = '<p class="small-muted">Checking order…</p>';
+  try {
+    // ask server
+    const resp = await apiCall({ action: 'track_order', order_id: id }, { showLoading: true, loadingText: 'Checking order…' });
+    if(resp && resp.status === 'ok' && resp.order){
+      const o = resp.order;
+      const cartHtml = (function(cartData){
+        try {
+          const arr = (typeof cartData === 'string') ? JSON.parse(cartData) : cartData;
+          if(!Array.isArray(arr)) return '';
+          return '<ul style="margin:8px 0 0 18px">' + arr.map(i => `<li>${(i.displayName||i.name||'Item')} × ${i.q||i.qty||1}${(i.price!=null?(' — ₹'+i.price):'')}</li>`).join('') + '</ul>';
+        } catch(e){ return ''; }
+      })(o.cart);
+
+      container.innerHTML = `<div style="padding:10px;border:1px solid #eee;border-radius:8px">
+        <strong>${o.order_id}</strong>
+        <div style="margin-top:6px">Status: <strong>${o.status || 'Placed'}</strong></div>
+        <div>ETA: ${(o.eta || '5-7 days based on location')}</div>
+        ${cartHtml ? `<div style="margin-top:8px">${cartHtml}</div>` : ''}
+        <div style="margin-top:8px;color:var(--muted)"><small>${o.timestamp || ''}</small></div>
+      </div>`;
+      return;
+    }
+
+    // fallback: check locally saved orders (recent client-side orders)
+    const found = myOrders.find(x => x.order_id === id);
+    if(found){
+      const cartHtml = (function(cartData){
+        try {
+          const arr = (typeof cartData === 'string') ? JSON.parse(cartData) : cartData;
+          if(!Array.isArray(arr)) return '';
+          return '<ul style="margin:8px 0 0 18px">' + arr.map(i => `<li>${(i.displayName||i.name||'Item')} × ${i.q||i.qty||1}${(i.price!=null?(' — ₹'+i.price):'')}</li>`).join('') + '</ul>';
+        } catch(e){ return ''; }
+      })(found.cart);
+
+      container.innerHTML = `<div style="padding:10px;border:1px solid #eee;border-radius:8px">
+        <strong>${found.order_id}</strong>
+        <div style="margin-top:6px">Status: <strong>${found.status || 'Placed'}</strong></div>
+        <div>ETA: 5-7 days based on location</div>
+        ${cartHtml ? `<div style="margin-top:8px">${cartHtml}</div>` : ''}
+        <div style="margin-top:8px;color:var(--muted)"><small>${found.timestamp || ''}</small></div>
+      </div>`;
+      return;
+    }
+
+    // not found
+    container.innerHTML = `<p class="small-muted">No tracking info found. If you just placed the order, wait a few minutes or contact support.</p>`;
+  } catch (err) {
+    console.error('trackOrder error', err);
+    container.innerHTML = '<p class="small-muted">Network error while tracking. Try again later.</p>';
+  }
+}
+
+function showRecentOrders(){
+  try{
+    const orders = loadMyOrders();
+    const input = document.getElementById('trackOrderId');
+    if(!orders || orders.length === 0){
+      showToast('No recent orders found.');
+      return;
+    }
+    if(input) input.value = orders[0].order_id;
+    showToast('Latest order selected');
+    // optionally auto-run tracking for convenience:
+    trackOrder();
+  }catch(e){
+    console.error('showRecentOrders error', e);
+    showToast('Unable to pick recent order');
+  }
+}
+
+
+
+/* Bind the track buttons defensively on DOM ready */
+(function bindTrackButtons(){
+  function attach(){
+    const tbtn = document.getElementById('trackBtn');
+    const prbtn = document.getElementById('pickRecentBtn');
+
+    if(tbtn && !tbtn._bound){
+      tbtn.addEventListener('click', function(e){ trackOrder().catch(err=>{console.error(err); showToast('Track failed')}); });
+      tbtn._bound = true;
+    }
+    if(prbtn && !prbtn._bound){
+      prbtn.addEventListener('click', function(e){ showRecentOrders(); });
+      prbtn._bound = true;
+    }
+
+    // also ensure global names exist (for any inline calls)
+    if(typeof trackOrder === 'function') window.trackOrder = trackOrder;
+    if(typeof showRecentOrders === 'function') window.showRecentOrders = showRecentOrders;
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', attach);
+  } else {
+    attach();
+  }
+})();
+
+const mt=document.getElementById('mobileTotal');
+if(mt) mt.innerText=document.getElementById('totalBill')?.innerText||0;
+async function markDelivered(orderId){
+  if(!confirm('Mark this order as Delivered?')) return;
+
+  const res = await apiCall({
+    action: 'mark_delivered',
+    order_id: orderId
+  }, { showLoading:true, loadingText:'Updating status…' });
+
+  if(res && res.status === 'ok'){
+    showToast('Order marked as Delivered');
+    renderAdminOrders();
+  } else {
+    showToast(res.message || 'Failed to update order');
+  }
+}
+
+
+
+function goCheckout(){
+
+  // 🔒 LOGIN REQUIRED
+  if(!currentUser || !currentUser.email || currentUser.email === 'guest'){
+    showToast('Please login to continue');
+    switchPage('loginPage');
+    return;
+  }
+
+  if(cart.length === 0){
+    showToast('Your cart is empty');
+    return;
+  }
+
+  renderSavedAddressUI();
+  switchPage('checkoutAddressPage');
+}
+
+
+async function confirmOrder(){
+
+  // 🔐 LOGIN CHECK (FIX)
+  if(!currentUser || !currentUser.email || currentUser.email === 'guest'){
+    showToast('Please login to place order');
+    switchPage('loginPage');
+    return;
+  }
+
+  if(!window._selectedAddress){
+    showToast('Address missing');
+    switchPage('checkoutAddressPage');
+    return;
+  }
+
+  const pay = document.querySelector('input[name="pay"]:checked')?.value;
+  if(!pay){
+    showToast('Select payment method');
+    return;
+  }
+
+  let total = calculateCartTotal();
+  if(pay === 'cod') total += 40;
+
+  if(pay === 'cod'){
+    placeFinalOrder('cod', total);
+    return;
+  }
+
+  openRazorpay(total, pay);
+}
+
+
+function saveAddressAndContinue(){
+  const addr = {
+    fname: co_fname.value.trim(),
+    lname: co_lname.value.trim(),
+    house: co_house.value.trim(),
+    area: co_area.value.trim(),
+    landmark: co_landmark.value.trim(),
+    city: co_city.value.trim(),
+    state: co_state.value.trim(),
+    pincode: co_pincode.value.trim(),
+    type: document.querySelector('input[name="addrType"]:checked')?.value || 'Home'
+  };
+
+  if(!addr.fname || !addr.lname || !addr.house || !addr.area ||
+     !addr.city || !addr.state || !addr.pincode){
+    showToast('Fill all address fields');
+    return;
+  }
+
+  // ✅ PHONE SAVE (FIX)
+  window._selectedPhone = co_phone.value.trim();
+  if(window._selectedPhone.length !== 10){
+    showToast('Enter valid 10 digit mobile number');
+    return;
+  }
+
+  let list = getSavedAddresses();
+  list.unshift(addr);
+  localStorage.setItem(addressKey(), JSON.stringify(list.slice(0,5)));
+
+  window._selectedAddress =
+    `${addr.house}, ${addr.area}, ${addr.landmark ? addr.landmark+', ' : ''}${addr.city}, ${addr.state} - ${addr.pincode} (${addr.type})`;
+
+  renderSavedAddressUI();
+  document.getElementById('continuePayBtn').style.display = 'block';
+}
+
+   
+
+
+
+document.addEventListener('change', e=>{
+  if(e.target.name === 'pay'){
+    updatePaymentTotal();
+  }
+});
+
+function calculateCartTotal(){
+  return cart.reduce((sum, item) => {
+    return sum + (Number(item.price) * Number(item.q));
+  }, 0);
+}
+
+
+function selectPay(method){
+  document.querySelectorAll('.pay-box').forEach(b=>b.classList.remove('active'));
+
+  const radio = document.querySelector(`input[name="pay"][value="${method}"]`);
+  if(radio){
+    radio.checked = true;
+    radio.closest('.pay-box').classList.add('active');
+  }
+
+  updatePaymentTotal();
+}
+
+function openRazorpayLive(amount){
+
+  const options = {
+    key: RAZORPAY_KEY, // LIVE key
+    amount: amount * 100,
+    currency: "INR",
+    name: "Vaishnav Delights",
+    description: "Order Payment",
+
+    handler: function (response) {
+      placeFinalOrder(
+        'online',
+        amount,
+        response.razorpay_payment_id,
+        response.razorpay_order_id || '',
+        response.razorpay_signature
+      );
+    },
+
+    prefill: {
+      name: currentUser.name,
+      email: currentUser.email
+    },
+
+    theme: { color: "#fb8500" }
+  };
+
+  const rzp = new Razorpay(options);
+  rzp.open();
+}
+
+
+async function openRazorpay(amount, method){
+
+  const order = await apiCall({
+    action: 'create_razorpay_order',
+    total: amount
+  });
+
+  if(!order || order.status !== 'ok'){
+    showToast('Payment init failed');
+    return;
+  }
+
+  const options = {
+    key: RAZORPAY_KEY,
+    amount: amount * 100,
+    currency: "INR",
+    name: "Vaishnav Delights",
+    description: "Order Payment",
+    order_id: order.razorpay_order_id,
+
+    prefill: {
+      name: currentUser.name,
+      email: currentUser.email
+    },
+
+    method: {
+      upi: method === 'upi',
+      card: method === 'card',
+      wallet: method === 'wallet',
+      netbanking: false
+    },
+
+   handler: function (response) {
+  placeFinalOrder(
+    method,
+    amount,
+    response.razorpay_payment_id,
+    response.razorpay_order_id,
+    response.razorpay_signature
+  );
+}
+,
+
+    theme: {
+      color: "#fb8500"
+    }
+  };
+
+  const rzp = new Razorpay(options);
+  rzp.open();
+}
+
+
+async function placeFinalOrder(paymentMethod, total, paymentId='', rpOrderId='', rpSignature=''){
+
+  showLoader('Placing order…');
+
+  const res = await apiCall({
+    action:'order',
+    email: currentUser.email,
+    name: currentUser.name,
+    phone: window._selectedPhone || '',
+    address: window._selectedAddress,
+    payment: paymentMethod,
+    payment_id: paymentId,
+    razorpay_order_id: rpOrderId,
+    razorpay_signature: rpSignature,
+    total: total,
+    cart: JSON.stringify(cart)
+  });
+
+  hideLoader();
+
+  if(!res || res.status !== 'ok'){
+    showToast(res?.message || 'Order failed');
+    return;
+  }
+
+  // ✅ SAVE ORDER LOCALLY (for Track / My Orders)
+  const myOrders = loadMyOrders();
+  myOrders.unshift({
+    order_id: res.order_id,
+    status: 'Placed',
+    payment: paymentMethod,
+    total: total,
+    cart: cart,
+    timestamp: new Date().toLocaleString()
+  });
+  saveMyOrders(myOrders);
+
+  // ✅ CLEAR CART
+  cart = [];
+  saveCart();
+  updateCounters();
+
+  // ✅ FILL SUCCESS PAGE DATA
+const sn = document.getElementById('successName');
+if(sn) sn.innerText = currentUser.name || 'Customer';
+  document.getElementById('successOrderId').innerText = res.order_id;
+
+  // ✅ GO TO SUCCESS PAGE
+  switchPage('orderSuccessPage');
+}
+
+
+
+function renderSavedAddressUI(){
+  const btn = document.getElementById('continuePayBtn');
+   if(btn) btn.style.display = 'none';
+
+  const list = getSavedAddresses();
+  const box = document.getElementById('savedAddressList');
+  const form = document.getElementById('addressForm');
+  const addBtn = document.getElementById('addNewAddrBtn');
+
+
+
+  if(!box) return;
+
+  if(list.length === 0){
+    form.style.display = 'block';
+    addBtn.style.display = 'none';
+    box.innerHTML = '';
+    return;
+  }
+
+  form.style.display = 'none';
+  addBtn.style.display = 'inline-block';
+
+  box.innerHTML = list.map((a,i)=>`
+    <div class="address-card">
+      <label class="addr-left">
+        <input type="radio" name="savedAddr"
+          ${i===0?'checked':''}
+          onchange="selectSavedAddress(${i})">
+      </label>
+
+      <div class="addr-body">
+        <strong>${a.fname} ${a.lname}</strong>
+        <p class="small-muted">
+          ${a.house}, ${a.area},
+          ${a.landmark ? a.landmark+', ' : ''}
+          ${a.city}, ${a.state} - ${a.pincode}
+          (${a.type})
+        </p>
+
+        <div class="addr-actions">
+          <button onclick="editAddress(${i})">Edit</button>
+          <button onclick="deleteAddress(${i})">Delete</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  selectSavedAddress(0);
+  // ✅ AUTO select first address (IMPORTANT FIX)
+if(list.length > 0){
+  selectSavedAddress(0);
+}
+
+}
+
+
+function cancelAddAddress(){
+
+  const form = document.getElementById('addressForm');
+  const addBtn = document.getElementById('addNewAddrBtn');
+  const contBtn = document.getElementById('continuePayBtn');
+
+  if(form) form.style.display = 'none';
+  if(addBtn) addBtn.style.display = 'inline-block';
+
+  // ✅ Show again ONLY if address exists
+  if(getSavedAddresses().length > 0 && contBtn){
+    contBtn.style.display = 'block';
+  }
+
+  window._editIndex = undefined;
+  showToast('Address cancelled');
+}
+
+
+function selectSavedAddress(i){
+  const a = getSavedAddresses()[i];
+  if(!a){
+    window._selectedAddress = null;
+    return;
+  }
+
+  window._selectedAddress =
+    `${a.house}, ${a.area}, ${a.landmark ? a.landmark+', ' : ''}${a.city}, ${a.state} - ${a.pincode} (${a.type})`;
+
+  // ✅ Show correct Continue button
+  const btn = document.getElementById('continuePayBtn');
+  if(btn) btn.style.display = 'block';
+}
+
+
+function showAddressForm(){
+
+  const form = document.getElementById('addressForm');
+  const addBtn = document.getElementById('addNewAddrBtn');
+  const contBtn = document.getElementById('continuePayBtn');
+
+  if(form) form.style.display = 'block';
+  if(addBtn) addBtn.style.display = 'none';
+
+  // 🔴 MAIN FIX
+  if(contBtn) contBtn.style.display = 'none';
+
+  window._selectedAddress = null; // safety
+}
+
+
+
+function editAddress(i){
+  const a = getSavedAddresses()[i];
+  if(!a) return;
+
+  showAddressForm();
+
+  co_fname.value = a.fname;
+  co_lname.value = a.lname;
+  co_house.value = a.house;
+  co_area.value = a.area;
+  co_landmark.value = a.landmark;
+  co_city.value = a.city;
+  co_state.value = a.state;
+  co_pincode.value = a.pincode;
+
+  document.querySelector(`input[name="addrType"][value="${a.type}"]`).checked = true;
+
+  window._editIndex = i;
+}
+
+function deleteAddress(i){
+  if(!confirm('Delete this address?')) return;
+
+  const list = getSavedAddresses();
+  list.splice(i,1);
+  localStorage.setItem(addressKey(), JSON.stringify(list));
+  renderSavedAddressUI();
+}
+
+window.addEventListener('popstate', function () {
+
+  const form = document.getElementById('addressForm');
+
+  // agar address form open hai
+  if(form && form.style.display === 'block'){
+    cancelAddAddress();
+
+    // browser ko page change se roko
+    history.pushState({ page: 'checkoutAddressPage' }, '', location.pathname);
+  }
+});
+
+async function fetchCityStateFromPincode(pincode){
+
+  if(!/^[1-9][0-9]{5}$/.test(pincode)){
+    return;
+  }
+
+  showLoader('Detecting location…');
+
+  try{
+    const res = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+    const data = await res.json();
+
+    hideLoader();
+
+    if(!data || data[0].Status !== 'Success'){
+      showToast('Invalid pincode');
+      return;
+    }
+
+    const post = data[0].PostOffice[0];
+
+    // Autofill
+    document.getElementById('co_city').value = post.District || '';
+    document.getElementById('co_state').value = post.State || '';
+
+  }catch(err){
+    hideLoader();
+    console.error(err);
+    showToast('Unable to fetch pincode data');
+  }
+}
+
+document.getElementById('co_pincode')?.addEventListener('input', function(){
+
+  const pin = this.value.trim();
+
+  if(pin.length === 6){
+    fetchCityStateFromPincode(pin);
+  }
+});
+
+
+</script>
+</body>
+</html>
