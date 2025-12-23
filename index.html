@@ -2506,6 +2506,16 @@ function calculateCartTotal(){
     return sum + (Number(item.price) * Number(item.q));
   }, 0);
 }
+function updatePaymentTotal(){
+  let total = calculateCartTotal();
+  const pay = document.querySelector('input[name="pay"]:checked')?.value;
+
+  if(pay === 'cod') total += 40;
+
+  document.getElementById('finalTotal').innerText = total;
+  document.getElementById('codNote').style.display =
+    pay === 'cod' ? 'block' : 'none';
+}
 
 
 function selectPay(method){
@@ -2517,8 +2527,14 @@ function selectPay(method){
     radio.closest('.pay-box').classList.add('active');
   }
 
-  updatePaymentTotal();
+  let total = calculateCartTotal();
+  if(method === 'cod') total += 40;
+
+  document.getElementById('finalTotal').innerText = total;
+  document.getElementById('codNote').style.display =
+    method === 'cod' ? 'block' : 'none';
 }
+
 
 function openRazorpayLive(amount){
 
