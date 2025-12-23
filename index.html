@@ -2,6 +2,8 @@
 <html lang="en">
   
 <head>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="icon" type="image/png" href="logo.png">
@@ -2866,6 +2868,65 @@ document.getElementById('co_pincode')?.addEventListener('input', function(){
     fetchCityStateFromPincode(pin);
   }
 });
+
+  async function startOnlinePayment(){
+  if(!currentUser){
+    showToast('Please login first');
+    return;
+  }
+
+  if(!window._selectedAddress){
+    showToast('Please select address');
+    return;
+  }
+
+  const total = calculateFinalTotal(); // COD +40 logic yahi hona chahiye
+
+  // 🔥 STEP A: Create Razorpay Order (Backend call)
+  const res = await apiCall({
+    action: 'create_razorpay_order',
+    total: total
+  });
+
+  if(!res || res.status !== 'ok'){
+    showToast('Payment init failed');
+    return;
+  }
+
+  // 🔥 STEP B: Open Razorpay
+  const options = {
+    key: 'rzp_live_Rsn0GKZCudvtAN', // LIVE key
+    amount: total * 100,
+    currency: 'INR',
+    name: 'Vaishnav Delights',
+    description: 'Order Payment',
+    order_id: res.razorpay_order_id,
+
+    handler: function (response) {
+      // ✅ Payment success → place order
+      placeFinalOrder(
+        'online',
+        total,
+        response.razorpay_payment_id,
+        response.razorpay_order_id,
+        response.razorpay_signature
+      );
+    },
+
+    prefill: {
+      name: currentUser.name,
+      email: currentUser.email,
+      contact: window._selectedPhone || ''
+    },
+
+    theme: {
+      color: '#ffb703'
+    }
+  };
+
+  const rzp = new Razorpay(options);
+  rzp.open();
+}
 
 
 </script>
