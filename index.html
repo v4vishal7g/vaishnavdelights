@@ -2425,18 +2425,16 @@ function goCheckout(){
 }
 
 
-async function confirmOrder(){
+  async function confirmOrder(){
 
-  // 🔒 LOGIN REQUIRED
   if(!currentUser || !currentUser.email || currentUser.email === 'guest'){
-    showToast('Please login to continue');
+    showToast('Please login first');
     switchPage('loginPage');
     return;
   }
 
-  // 📍 ADDRESS REQUIRED
   if(!window._selectedAddress){
-    showToast('Please select address');
+    showToast('Select address');
     switchPage('checkoutAddressPage');
     return;
   }
@@ -2450,25 +2448,15 @@ async function confirmOrder(){
   let total = calculateCartTotal();
   if(pay === 'cod') total += 40;
 
-  console.log('PAY:', pay, 'TOTAL:', total);
-
-  // ✅ CASH ON DELIVERY
   if(pay === 'cod'){
     placeFinalOrder('cod', total);
     return;
   }
 
-  // ✅ ONLINE PAYMENT (RAZORPAY)
-  try{
-    showLoader('Initializing payment…');
-    await openRazorpay(total, pay);
-  }catch(err){
-    console.error(err);
-    showToast('Payment not initiated');
-  }finally{
-    hideLoader();
-  }
+  // 🔥 ONLINE PAYMENT ONLY
+  openRazorpay(total, pay);
 }
+
 
 
 
