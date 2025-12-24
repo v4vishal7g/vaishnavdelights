@@ -2423,43 +2423,6 @@ function goCheckout(){
   renderSavedAddressUI();
   switchPage('checkoutAddressPage');
 }
-
-
-  async function confirmOrder(){
-
-  if(!currentUser || !currentUser.email || currentUser.email === 'guest'){
-    showToast('Please login first');
-    switchPage('loginPage');
-    return;
-  }
-
-  if(!window._selectedAddress){
-    showToast('Select address');
-    switchPage('checkoutAddressPage');
-    return;
-  }
-
-  const pay = document.querySelector('input[name="pay"]:checked')?.value;
-  if(!pay){
-    showToast('Select payment method');
-    return;
-  }
-
-  let total = calculateCartTotal();
-  if(pay === 'cod') total += 40;
-
-  if(pay === 'cod'){
-    placeFinalOrder('cod', total);
-    return;
-  }
-
-  // 🔥 ONLINE PAYMENT ONLY
-  openRazorpay(total, pay);
-}
-
-
-
-
 function saveAddressAndContinue(){
   const addr = {
     fname: co_fname.value.trim(),
@@ -2540,93 +2503,6 @@ function selectPay(method){
   document.getElementById('codNote').style.display =
     method === 'cod' ? 'block' : 'none';
 }
-
-
-function openRazorpayLive(amount){
-
-  const options = {
-    key: RAZORPAY_KEY, // LIVE key
-    amount: amount * 100,
-    currency: "INR",
-    name: "Vaishnav Delights",
-    description: "Order Payment",
-
-    handler: function (response) {
-      placeFinalOrder(
-        'online',
-        amount,
-        response.razorpay_payment_id,
-        response.razorpay_order_id || '',
-        response.razorpay_signature
-      );
-    },
-
-    prefill: {
-      name: currentUser.name,
-      email: currentUser.email
-    },
-
-    theme: { color: "#fb8500" }
-  };
-
-  const rzp = new Razorpay(options);
-  rzp.open();
-}
-
-
-async function openRazorpay(amount, method){
-
-  const order = await apiCall({
-    action: 'create_razorpay_order',
-    total: amount
-  });
-
-  if(!order || order.status !== 'ok'){
-    showToast('Payment init failed');
-    return;
-  }
-
-  const options = {
-    key: RAZORPAY_KEY,
-    amount: amount * 100,
-    currency: "INR",
-    name: "Vaishnav Delights",
-    description: "Order Payment",
-    order_id: order.razorpay_order_id,
-
-    prefill: {
-      name: currentUser.name,
-      email: currentUser.email
-    },
-
-    method: {
-      upi: method === 'upi',
-      card: method === 'card',
-      wallet: method === 'wallet',
-      netbanking: false
-    },
-
-   handler: function (response) {
-  placeFinalOrder(
-    method,
-    amount,
-    response.razorpay_payment_id,
-    response.razorpay_order_id,
-    response.razorpay_signature
-  );
-}
-,
-
-    theme: {
-      color: "#fb8500"
-    }
-  };
-
-  const rzp = new Razorpay(options);
-  rzp.open();
-}
-
-
 async function placeFinalOrder(paymentMethod, total, paymentId='', rpOrderId='', rpSignature=''){
 
   showLoader('Placing order…');
