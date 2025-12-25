@@ -1195,7 +1195,8 @@ body{
 </div>
 
       <div id="trackResult" style="margin-top:12px"></div>
-     <div class="order-timeline">
+   <div id="orderTimeline" class="order-timeline" style="display:none"></div>
+
   <div class="timeline-step active">
     <span class="dot"></span>
     <div class="content">
@@ -1867,6 +1868,8 @@ function updateAccountUI(){
 
 /* ------------------------- ORDERS PAGE / TRACKING ------------------------- */
 async function showMyOrdersList(){
+
+  
   const container = document.getElementById('ordersListContainer');
   if(!container) return;
 
@@ -1876,6 +1879,7 @@ async function showMyOrdersList(){
   }
 
   container.innerHTML = '<p class="small-muted">Loading orders...</p>';
+  
 
   try{
     const data = await apiCall({
@@ -1904,19 +1908,35 @@ async function showMyOrdersList(){
       const ts = o.timestamp || '';
       const total = o.total ? ` — ₹${o.total}` : '';
       const cartText = formatCart(o.cart);
+      const cleanStatus = String(o.status || '').toLowerCase();
+
+   const canCancel =
+  cleanStatus === 'placed' ||
+  cleanStatus === 'packed';
+
 
       return `
         <div style="padding:12px;border:1px solid #eee;border-radius:10px;margin-bottom:10px">
-          <strong>${o.order_id}</strong>${total}<br>
-          <small>${ts}</small>
+    <strong>${o.order_id}</strong>${total}<br>
+    <small>${ts}</small>
 
-          <div style="margin-top:6px">
-            <strong>${status}</strong>
-            ${payment ? `<span style="color:#666"> (${payment})</span>` : ''}
-          </div>
+    <div style="margin-top:6px">
+      <strong>${status}</strong>
+      ${payment ? `<span style="color:#666"> (${payment})</span>` : ''}
+    </div>
 
-          ${cartText ? `<div style="margin-top:8px;color:#666">${cartText}</div>` : ''}
-        </div>
+    ${cartText ? `<div style="margin-top:8px;color:#666">${cartText}</div>` : ''}
+
+    ${
+      canCancel
+        ? `<button class="btn"
+             style="margin-top:8px;background:#eee;color:#111"
+             onclick="cancelOrderFromSite('${o.order_id}')">
+             Cancel Order
+           </button>`
+        : ''
+    }
+  </div>
       `;
     }).join('');
 
@@ -2324,17 +2344,25 @@ function renderCart(){
 
 
 function continueWithSelectedAddress(){
+
+  if(!window._selectedAddress){
+    const list = getSavedAddresses();
+    if(list.length){
+      selectSavedAddress(0); // auto select
+    }
+  }
+
   if(!window._selectedAddress){
     showToast('Select an address');
     return;
   }
 
-  // ✅ FIX
   window._checkoutTotal = calculateCartTotal();
   document.getElementById('finalTotal').innerText = window._checkoutTotal;
 
   switchPage('checkoutPaymentPage');
 }
+
 
 
 
@@ -2507,8 +2535,10 @@ async function trackOrder(){
     if(resp && resp.status === 'ok' && resp.order){
       const o = resp.order;
 if(o.events && o.events.length){
-  renderTimeline(o.events);
+  renderEventsTimeline(o.events);
 }
+
+renderStatusTimeline(o.status || 'Placed');
       const cartHtml = (function(cartData){
         try{
           const arr = (typeof cartData === 'string')
@@ -3165,7 +3195,7 @@ const ORDER_STEPS = [
   'Delivered'
 ];
 
-function renderTimeline(currentStatus){
+function renderStatusTimeline(currentStatus){
   const index = ORDER_STEPS.indexOf(currentStatus);
 
   document.querySelectorAll('.timeline .step')
@@ -3225,7 +3255,7 @@ async function loadAddressesFromServer(){
   }
 }
 
-  function renderTimeline(events){
+  function renderEventsTimeline(events){
   const box = document.getElementById('orderTimeline');
   if(!box) return;
 
