@@ -796,6 +796,76 @@ body{
   .cart-total{
     width:
 
+/* ===== ORDER TIMELINE ===== */
+
+.order-timeline{
+  padding:12px;
+}
+
+.timeline-step{
+  display:flex;
+  gap:12px;
+  position:relative;
+  padding-bottom:20px;
+}
+
+.timeline-step:last-child{
+  padding-bottom:0;
+}
+
+.timeline-step::before{
+  content:'';
+  position:absolute;
+  left:6px;
+  top:18px;
+  bottom:0;
+  width:2px;
+  background:#ddd;
+}
+
+.timeline-step:last-child::before{
+  display:none;
+}
+
+.timeline-step .dot{
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:#ccc;
+  margin-top:2px;
+  flex-shrink:0;
+}
+
+.timeline-step.active .dot{
+  background:#28a745;
+}
+
+.timeline-step.active::before{
+  background:#28a745;
+}
+
+.timeline-step .content strong{
+  font-size:14px;
+  display:block;
+}
+
+.timeline-step .content small{
+  color:#777;
+  font-size:12px;
+}
+
+/* 🔥 MOBILE FIX */
+@media (max-width:600px){
+  .timeline-step{
+    gap:10px;
+  }
+  .timeline-step .content strong{
+    font-size:13px;
+  }
+  .timeline-step .content small{
+    font-size:11px;
+  }
+}
 
 
 </style>
@@ -1125,23 +1195,31 @@ body{
 </div>
 
       <div id="trackResult" style="margin-top:12px"></div>
-      <div id="orderTimeline" style="display:none">
-
-  <div class="order-tracking">
-
-    <div class="timeline">
-      <div class="step">Order Confirmed</div>
-      <div class="step">Packed</div>
-      <div class="step">Shipped</div>
-      <div class="step">Out for Delivery</div>
-      <div class="step">Delivered</div>
+     <div class="order-timeline">
+  <div class="timeline-step active">
+    <span class="dot"></span>
+    <div class="content">
+      <strong>Order Confirmed</strong>
+      <small>25/12/2025, 15:53</small>
     </div>
-
-    <div class="events" id="events"></div>
-
   </div>
 
+  <div class="timeline-step">
+    <span class="dot"></span>
+    <div class="content">
+      <strong>Packed</strong>
+      <small>Seller has processed your order</small>
+    </div>
+  </div>
+
+  <div class="timeline-step">
+    <span class="dot"></span>
+    <div class="content">
+      <strong>Shipped</strong>
+    </div>
+  </div>
 </div>
+
 
     </div>
   </div>
@@ -1368,7 +1446,7 @@ body{
 
 <script>
 /* ------------------------- CONFIG ------------------------- */
-const API_URL = "https://script.google.com/macros/s/AKfycbyVn_bMzj7txZBaQwxopvpM44VJ0LD74Zv59DWgxXu1F5roGtVSuqGfT-K7Z7U-Q2-O/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwGTIepvjkb8i5PxG9_ddQTHBrdIfPBkjKJiqt2TE7cZoqzbeaI7zOhP6I7jzPFB51Y/exec";
 const RAZORPAY_KEY = "rzp_live_RukjWIITK7i5hU"; // TODO change to your Razorpay key
 
 
@@ -2479,7 +2557,9 @@ async function trackOrder(){
 
     if(resp && resp.status === 'ok' && resp.order){
       const o = resp.order;
-
+if(o.events && o.events.length){
+  renderTimeline(o.events);
+}
       const cartHtml = (function(cartData){
         try{
           const arr = (typeof cartData === 'string')
@@ -2509,7 +2589,7 @@ async function trackOrder(){
         </div>
       `;
 
-      /* 🔥 FLIPKART STYLE TIMELINE */
+    
       loadOrderTimeline(o.order_id, o.status || 'Placed');
 
       return;
@@ -3196,7 +3276,25 @@ async function loadAddressesFromServer(){
   }
 }
 
-  
+  function renderTimeline(events){
+  const box = document.getElementById('orderTimeline');
+  if(!box) return;
+
+  box.innerHTML = '';
+
+  events.forEach(e => {
+    box.innerHTML += `
+      <div class="timeline-step active">
+        <span class="dot"></span>
+        <div class="content">
+          <strong>${e.text}</strong>
+          <small>${new Date(e.time).toLocaleString()}</small>
+        </div>
+      </div>
+    `;
+  });
+}
+
 
 
 </script>
