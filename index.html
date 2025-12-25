@@ -1890,42 +1890,49 @@ async function serverGetUser(email){
 /* SIGNUP via OTP -> create user on server after OTP verifies */
 async function signupWithOTP(){
   try {
+
+    // 🔥 1. SHOW LOADER FIRST (IMMEDIATE)
+    showLoader('Sending code…');
+
+    // 🔥 2. LET UI PAINT
+    await new Promise(r => setTimeout(r, 0));
+
     const name = document.getElementById('su_name').value.trim();
     const email = document.getElementById('su_email').value.trim().toLowerCase();
     const pass = document.getElementById('su_pass').value;
 
     if(!name || !email || !pass){
-      document.getElementById('sign_msg').innerText='Fill all fields';
+      hideLoader();
+      document.getElementById('sign_msg').innerText = 'Fill all fields';
       return;
     }
 
+    // ⏳ THIS WAS BLOCKING UI BEFORE
     const existing = await serverGetUser(email);
     if(existing){
-      document.getElementById('sign_msg').innerText='Account exists. Please login.';
+      hideLoader();
+      document.getElementById('sign_msg').innerText =
+        'Account exists. Please login.';
       return;
     }
 
-   // 🔄 show loader immediately
-showLoader('Sending code…');
+    // 🔥 SEND OTP (fire & forget)
+    apiCall(
+      { action:'send_otp_email', email, purpose:'signup' },
+      { showLoading:false }
+    ).catch(()=>{});
 
-/* 🔥 FIRE-AND-FORGET OTP SEND (do NOT await) */
-apiCall(
-  { action:'send_otp_email', email, purpose:'signup' },
-  { showLoading:false }
-).catch(()=>{});
-
-/* 🚀 hide loader quickly for good UX */
-setTimeout(() => {
-  hideLoader();
-  showToast('Code sent to email');
-}, 600);
-
-  
+    // 🚀 QUICK UX FEEDBACK
+    setTimeout(() => {
+      hideLoader();
+      showToast('Code sent to email');
+    }, 500);
 
     showModal(
       'Enter code',
       `A code was sent to ${email}. Enter it below.`,
       async function(code){
+
         const ok = await verifyOtpOnServer(email, code, 'signup');
         if(!ok) return;
 
