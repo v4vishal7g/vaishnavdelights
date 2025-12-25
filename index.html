@@ -2707,23 +2707,18 @@ async function placeFinalOrder(paymentMethod, total, paymentId='', rpOrderId='',
 const sn = document.getElementById('successName');
 if(sn) sn.innerText = currentUser.name || 'Customer';
   document.getElementById('successOrderId').innerText = res.order_id;
-
   // ✅ GO TO SUCCESS PAGE
   switchPage('orderSuccessPage');
 }
 
-
-
-function renderSavedAddressUI(){
+  function renderSavedAddressUI(){
   const btn = document.getElementById('continuePayBtn');
-   if(btn) btn.style.display = 'none';
+  if(btn) btn.style.display = 'none';
 
   const list = getSavedAddresses();
   const box = document.getElementById('savedAddressList');
   const form = document.getElementById('addressForm');
   const addBtn = document.getElementById('addNewAddrBtn');
-
-
 
   if(!box) return;
 
@@ -2762,15 +2757,16 @@ function renderSavedAddressUI(){
     </div>
   `).join('');
 
-  selectSavedAddress(0);
-  // ✅ AUTO select first address (IMPORTANT FIX)
-if(list.length > 0){
-  selectSavedAddress(0);
+  // 🔥 CRITICAL FIX — DOM settle hone do
+  setTimeout(() => {
+    if(list.length > 0){
+      selectSavedAddress(0);
+    }
+  }, 0);
 }
 
-}
 
-
+  
 function cancelAddAddress(){
 
   const form = document.getElementById('addressForm');
