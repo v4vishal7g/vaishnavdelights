@@ -752,6 +752,40 @@ body{
   color:#777;
 }
 
+/* ===== MOBILE CART FIX ===== */
+@media (max-width: 768px){
+
+  .cart-head-row{
+    display: none; /* desktop headings hide */
+  }
+
+  #cartItems .cart-row{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    margin-bottom: 12px;
+  }
+
+  #cartItems .cart-product{
+    width: 100%;
+  }
+
+  #cartItems .cart-qty{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  #cartItems .cart-total{
+    width: 100%;
+    text-align: right;
+    font-weight: 600;
+    font-size: 16px;
+  }
+}
 
 
 </style>
