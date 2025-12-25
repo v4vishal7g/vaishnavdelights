@@ -1368,7 +1368,7 @@ body{
 
 <script>
 /* ------------------------- CONFIG ------------------------- */
-const API_URL = "https://script.google.com/macros/s/AKfycbwao0mac0p2rf8w2z768bj13WoeU6ggODGjMVCnRu7sKQuIpHuUHgDHrocWR9p28W6Q/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyVn_bMzj7txZBaQwxopvpM44VJ0LD74Zv59DWgxXu1F5roGtVSuqGfT-K7Z7U-Q2-O/exec";
 const RAZORPAY_KEY = "rzp_live_RukjWIITK7i5hU"; // TODO change to your Razorpay key
 
 
@@ -2022,24 +2022,49 @@ function setLoginMode(mode){
 async function loginWithPassword(){
   const email = (document.getElementById('log_email')||{}).value.trim().toLowerCase();
   const pass = (document.getElementById('log_pass')||{}).value;
+
   if(!email || !pass){
-    document.getElementById('log_msg').innerText='Enter credentials'; return;
+    document.getElementById('log_msg').innerText = 'Enter credentials';
+    return;
   }
+
   try{
-    const res = await apiCall({ action:'login', email, password: pass }, { showLoading:true, loadingText:'loading' });
+    const res = await apiCall(
+      { action:'login', email, password: pass },
+      { showLoading:true, loadingText:'Logging in…' }
+    );
+
     if(!res || res.status !== 'ok'){
-      document.getElementById('log_msg').innerText = (res && res.message) ? res.message : 'Login failed';
+      document.getElementById('log_msg').innerText =
+        (res && res.message) ? res.message : 'Login failed';
       return;
     }
+
     const user = res.user;
+
     localStorage.setItem('email', user.email);
     localStorage.setItem('role', user.role || 'customer');
     localStorage.setItem('name', user.name || user.email.split('@')[0]);
-    currentUser = { email: user.email, role: localStorage.getItem('role'), name: localStorage.getItem('name') };
-    loadCart(); loadWish(); showToast('Logged in'); switchPage('customerPage');
+
+    currentUser = {
+      email: user.email,
+      role: user.role || 'customer',
+      name: user.name || user.email.split('@')[0]
+    };
+
+    loadCart();
+    loadWish();
+
+    // 🔥🔥🔥 YAHI ADD KARNA HAI 🔥🔥🔥
+    await loadAddressesFromServer();
+
+    showToast('Logged in');
+    switchPage('customerPage');
+
   } catch(e){
     console.error('login error', e);
-    document.getElementById('log_msg').innerText='Network error while logging in.';
+    document.getElementById('log_msg').innerText =
+      'Network error while logging in.';
   }
 }
 
@@ -2085,7 +2110,9 @@ async function sendLoginOTP(){
 
     currentUser = { email: user.email, role:'customer', name: localStorage.getItem('name') };
 
-    loadCart(); loadWish();
+    loadCart();
+    loadWish();
+     await loadAddressesFromServer();
     closeOtpModal();
     showToast('Logged in');
     switchPage('customerPage');
@@ -2657,11 +2684,12 @@ function goCheckout(){
   }
 
   // 🔥 BACKEND SAVE (MAIN FIX)
-  const res = await apiCall({
-    action: 'save_address',
-    email: currentUser.email,
-    ...addr
-  });
+  await apiCall({
+  action: 'save_address',
+  email: currentUser.email,
+  ...addr
+});
+
 
   if(!res || res.status !== 'ok'){
     showToast('Address save failed');
