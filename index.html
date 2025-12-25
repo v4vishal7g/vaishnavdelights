@@ -2657,56 +2657,73 @@ function goCheckout(){
 }
 
 
- async function saveAddressAndContinue(){
+async function saveAddressAndContinue(){
+  try{
+    showLoader('Saving address…');
 
-  const addr = {
-    fname: co_fname.value.trim(),
-    lname: co_lname.value.trim(),
-    phone: co_phone.value.trim(),
-    house: co_house.value.trim(),
-    area: co_area.value.trim(),
-    landmark: co_landmark.value.trim(),
-    city: co_city.value.trim(),
-    state: co_state.value.trim(),
-    pincode: co_pincode.value.trim(),
-    type: document.querySelector('input[name="addrType"]:checked')?.value || 'Home'
-  };
+    const addr = {
+      fname: co_fname.value.trim(),
+      lname: co_lname.value.trim(),
+      phone: co_phone.value.trim(),
+      house: co_house.value.trim(),
+      area: co_area.value.trim(),
+      landmark: co_landmark.value.trim(),
+      city: co_city.value.trim(),
+      state: co_state.value.trim(),
+      pincode: co_pincode.value.trim(),
+      type: document.querySelector('input[name="addrType"]:checked')?.value || 'Home'
+    };
 
-  if(!addr.fname || !addr.lname || !addr.phone || !addr.house ||
-     !addr.area || !addr.city || !addr.state || !addr.pincode){
-    showToast('Fill all address fields');
-    return;
+    if(!addr.fname || !addr.lname || !addr.house || !addr.area ||
+       !addr.city || !addr.state || !addr.pincode){
+      hideLoader();
+      showToast('Fill all address fields');
+      return;
+    }
+
+    if(!addr.phone || addr.phone.length !== 10){
+      hideLoader();
+      showToast('Enter valid 10 digit mobile number');
+      return;
+    }
+
+    // ✅ 1. SAVE LOCALLY (instant UI)
+    let list = getSavedAddresses();
+    list.unshift(addr);
+    localStorage.setItem(addressKey(), JSON.stringify(list.slice(0,5)));
+
+    // ✅ 2. SAVE TO SERVER (🔥 THIS WAS MISSING)
+    const res = await apiCall({
+      action:'save_address',
+      email: currentUser.email,
+      ...addr
+    }, { showLoading:false });
+
+    if(!res || res.status !== 'ok'){
+      hideLoader();
+      showToast(res?.message || 'Failed to save address');
+      return;
+    }
+
+    // ✅ 3. SET SELECTED VALUES
+    window._selectedAddress =
+      `${addr.house}, ${addr.area}, ${addr.landmark ? addr.landmark+', ' : ''}${addr.city}, ${addr.state} - ${addr.pincode} (${addr.type})`;
+
+    window._selectedPhone = addr.phone;
+
+    renderSavedAddressUI();
+    document.getElementById('continuePayBtn').style.display = 'block';
+
+    hideLoader();
+    showToast('Address saved');
+
+  }catch(err){
+    console.error(err);
+    hideLoader();
+    showToast('Something went wrong');
   }
-
-  if(addr.phone.length !== 10){
-    showToast('Enter valid 10 digit mobile number');
-    return;
-  }
-
-  // 🔥 BACKEND SAVE (MAIN FIX)
-  await apiCall({
-  action: 'save_address',
-  email: currentUser.email,
-  ...addr
-});
-
-
-  if(!res || res.status !== 'ok'){
-    showToast('Address save failed');
-    return;
-  }
-
-  // 🔁 reload addresses from backend
-  await loadAddressesFromServer();
-
-  // ✅ set selected values
-  window._selectedAddress =
-    `${addr.house}, ${addr.area}, ${addr.landmark ? addr.landmark+', ' : ''}${addr.city}, ${addr.state} - ${addr.pincode} (${addr.type})`;
-
-  window._selectedPhone = addr.phone;
-
-  showToast('Address saved');
 }
+
 
 
 
