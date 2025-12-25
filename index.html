@@ -794,8 +794,10 @@ body{
   }
 
   .cart-total{
-    width:
+    width:100%;
 
+  }
+}
 /* ===== ORDER TIMELINE ===== */
 
 .order-timeline{
@@ -866,23 +868,35 @@ body{
     font-size:11px;
   }
 }
-.btn-danger{
-  background: #fee2e2;           /* light red bg */
-  color: #b91c1c;                /* dark red text */
+.btn-danger {
+  background: #fee2e2;
+  color: #b91c1c;
   border: 1px solid #fca5a5;
   font-weight: 600;
 }
 
-.btn-danger:hover{
-  background: #ef4444;           /* solid red on hover */
-  color: #fff;
+.btn-danger:hover {
+  background: #ef4444;
+  color: #ffffff;
   border-color: #ef4444;
 }
 
-.btn-danger:active{
+.btn-danger:active {
   transform: scale(0.97);
 }
 
+.timeline-step.current .dot{
+  background:#2563eb;
+  box-shadow:0 0 0 4px rgba(37,99,235,.15);
+}
+
+.timeline-step.current strong{
+  color:#2563eb;
+}
+
+.timeline-step:not(.active){
+  opacity:.45;
+}
 
 </style>
 </head>
@@ -1443,6 +1457,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwmRPNVEItdyFfv50O7gfXW
 const RAZORPAY_KEY = "rzp_live_RukjWIITK7i5hU"; // TODO change to your Razorpay key
 
 
+// ===== ORDER STATUS FLOW (Flipkart style) =====
+const STATUS_FLOW = [
+  'Order Confirmed',
+  'Packed',
+  'Shipped',
+  'Out for Delivery',
+  'Delivered'
+];
+
 
 
 function addressKey(){
@@ -1883,16 +1906,54 @@ async function showMyOrdersList(){
       container.innerHTML = '<p class="small-muted">No orders found.</p>';
       return;
     }
+const formatCart = (cartData)=>{
+  try{
+    const arr = typeof cartData === 'string'
+      ? JSON.parse(cartData)
+      : cartData;
 
-    const formatCart = (cartData)=>{
-      try{
-        const arr = typeof cartData === 'string' ? JSON.parse(cartData) : cartData;
-        if(!Array.isArray(arr)) return '';
-        return arr.map(i =>
-          `${i.displayName || i.name} × ${i.q || 1} — ₹${i.price}`
-        ).join(', ');
-      }catch(e){ return ''; }
-    };
+    if(!Array.isArray(arr) || !arr.length) return '';
+
+    return `
+      <div style="margin-top:10px">
+        ${arr.map(i => `
+          <div style="
+            display:flex;
+            gap:12px;
+            align-items:center;
+            margin-bottom:10px;
+          ">
+            <img
+              src="${i.img || 'thekua1.jpg'}"
+              alt="${i.name}"
+              style="
+                width:60px;
+                height:60px;
+                object-fit:cover;
+                border-radius:8px;
+                border:1px solid #eee;
+              "
+            />
+
+            <div>
+              <div style="font-weight:600">
+                ${i.displayName || i.name}
+              </div>
+              <div class="small-muted">
+                Qty: ${i.q || i.qty || 1}
+                • ₹${(i.price || 0) * (i.q || i.qty || 1)}
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }catch(e){
+    console.error(e);
+    return '';
+  }
+};
+
 
     container.innerHTML = data.orders.map(o=>{
       const status = String(o.status || 'Placed');
@@ -1906,31 +1967,53 @@ async function showMyOrdersList(){
   cleanStatus === 'placed' ||
   cleanStatus === 'packed';
 
+  return `
+  <div style="
+    padding:14px;
+    border:1px solid #eee;
+    border-radius:14px;
+    margin-bottom:14px;
+    background:#fff
+  ">
 
-      return `
-        <div style="padding:12px;border:1px solid #eee;border-radius:10px;margin-bottom:10px">
-    <strong>${o.order_id}</strong>${total}<br>
-    <small>${ts}</small>
+    <!-- TOP -->
+    <div style="display:flex;justify-content:space-between;align-items:flex-start">
+      <div>
+        <strong>${o.order_id}</strong><br>
+        <small class="small-muted">${o.timestamp}</small><br>
 
-    <div style="margin-top:6px">
-      <strong>${status}</strong>
-      ${payment ? `<span style="color:#666"> (${payment})</span>` : ''}
+      </div>
     </div>
 
-    ${cartText ? `<div style="margin-top:8px;color:#666">${cartText}</div>` : ''}
+    <!-- PRODUCTS -->
+    ${formatCart(o.cart)}
 
-    ${
-      canCancel
-        ? `<button class="btn btn-danger"
-  style="margin-top:8px"
-  onclick="cancelOrderFromSite('${o.order_id}')">
-  Cancel Order
-</button>
+    <!-- BOTTOM -->
+    <div style="
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-top:12px;
+      border-top:1px solid #eee;
+      padding-top:10px
+    ">
+      <strong>Total: ₹${o.total}</strong>
 
-        : ''
-    }
+      ${
+        canCancel
+          ? `<button class="btn btn-danger"
+              onclick="cancelOrderFromSite('${o.order_id}')">
+              Cancel Order
+            </button>`
+          : ''
+      }
+    </div>
+
   </div>
-      `;
+`;
+
+
+      
     }).join('');
 
   }catch(err){
@@ -2550,9 +2633,8 @@ renderStatusTimeline(o.status || 'Placed');
       container.innerHTML = `
         <div style="padding:12px;border:1px solid #eee;border-radius:10px">
           <strong>${o.order_id}</strong>
-          <div style="margin-top:6px">
-            Status: <strong>${o.status || 'Placed'}</strong>
-          </div>
+         
+
           <div>ETA: ${o.eta || '5–7 days based on location'}</div>
           ${cartHtml ? `<div style="margin-top:8px">${cartHtml}</div>` : ''}
           <div style="margin-top:8px;color:#777">
@@ -3251,27 +3333,42 @@ async function loadAddressesFromServer(){
   }
 }
 
+
+
+
 function renderEventsTimeline(events){
   const box = document.getElementById('orderTimeline');
   if(!box) return;
 
   box.style.display = 'block';
-  box.innerHTML = '';
 
-  events.forEach((e, i) => {
-    box.innerHTML += `
-      <div class="timeline-step active">
+  // Normalize events
+  const doneTitles = events.map(e => e.title);
+
+  box.innerHTML = STATUS_FLOW.map((step, i) => {
+
+    const doneIndex = doneTitles.indexOf(step);
+    const isDone = doneIndex !== -1;
+    const isActive =
+      isDone && doneIndex === doneTitles.length - 1;
+
+    const time = isDone
+      ? new Date(events[doneIndex].timestamp).toLocaleString()
+      : '';
+
+    return `
+      <div class="timeline-step
+        ${isDone ? 'active' : ''}
+        ${isActive ? 'current' : ''}">
         <span class="dot"></span>
         <div class="content">
-          <strong>${e.title}</strong>
-          <small>${new Date(e.timestamp).toLocaleString()}</small>
+          <strong>${step}</strong>
+          ${time ? `<small>${time}</small>` : ''}
         </div>
       </div>
     `;
-  });
+  }).join('');
 }
-
-
 
 
 </script>
