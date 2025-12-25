@@ -3067,6 +3067,29 @@ function loadOrderTimeline(orderId, currentStatus){
   });
 }
 
+  function listOrdersByEmail(p){
+  const email = normalizeEmail(p.email);
+  const d = sh(SHEET_ORDERS).getDataRange().getValues();
+  const out = [];
+
+  for(let i = 1; i < d.length; i++){
+    const rowEmail = normalizeEmail(d[i][1]);
+    if(rowEmail === email){
+      out.push({
+        order_id: d[i][0],
+        email: d[i][1],
+        total: d[i][7],
+        cart: d[i][8],
+        status: d[i][9],
+        payment: d[i][5],
+        timestamp: d[i][10]
+      });
+    }
+  }
+
+  return { status:'ok', orders: out };
+}
+
 
 </script>
 </body>
