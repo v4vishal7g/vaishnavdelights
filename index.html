@@ -1446,7 +1446,7 @@ body{
 
 <script>
 /* ------------------------- CONFIG ------------------------- */
-const API_URL = "https://script.google.com/macros/s/AKfycbx1vXSDMnX7xggWZdAZNEdUAR1LIfZOTSKit_-5z1w6Y6waetqv32__jfa4Fh3ytiuw/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxuwx7TUuQR-3O6UkBOfrErCW1ER1laWZZ9PIYlK73fwXnSbr_TNZp37Wx5vI1FHv7e/exec";
 const RAZORPAY_KEY = "rzp_live_RukjWIITK7i5hU"; // TODO change to your Razorpay key
 
 
@@ -1870,115 +1870,64 @@ async function showMyOrdersList(){
   const container = document.getElementById('ordersListContainer');
   if(!container) return;
 
-  if(!currentUser.email || currentUser.email==='guest'){
+  if(!currentUser.email || currentUser.email === 'guest'){
     container.innerHTML = '<p class="small-muted">Please login to view orders.</p>';
     return;
   }
 
   container.innerHTML = '<p class="small-muted">Loading orders...</p>';
 
-  try {
+  try{
     const data = await apiCall({
-  action: 'list_orders_by_email',
-  email: normalizeEmail(currentUser.email)
-}, { showLoading:false });
+      action: 'list_orders_by_email',
+      email: normalizeEmail(currentUser.email)
+    }, { showLoading:false });
 
-    if(!data || data.status!=='ok' || !Array.isArray(data.orders)){
+    if(!data || data.status !== 'ok' || !Array.isArray(data.orders)){
       container.innerHTML = '<p class="small-muted">No orders found.</p>';
       return;
     }
 
-    const orders = data.orders;
-
-    const formatCart = (cartData) => {
-      try {
-        const arr = (typeof cartData === 'string') ? JSON.parse(cartData) : cartData;
+    const formatCart = (cartData)=>{
+      try{
+        const arr = typeof cartData === 'string' ? JSON.parse(cartData) : cartData;
         if(!Array.isArray(arr)) return '';
-        return arr.map(i => {
-          const name = i.displayName || i.name || 'Item';
-          const q = i.q || i.qty || i.quantity || 1;
-          const price = (i.price != null) ? ` — ₹${i.price}` : '';
-          return `${name} × ${q}${price}`;
-        }).join(', ');
-      } catch (e) {
-        return '';
-      }
+        return arr.map(i =>
+          `${i.displayName || i.name} × ${i.q || 1} — ₹${i.price}`
+        ).join(', ');
+      }catch(e){ return ''; }
     };
 
-    
-    container.innerHTML = orders.map(o => {
+    container.innerHTML = data.orders.map(o=>{
+      const status = String(o.status || 'Placed');
+      const payment = String(o.payment || '').toUpperCase();
+      const ts = o.timestamp || '';
+      const total = o.total ? ` — ₹${o.total}` : '';
+      const cartText = formatCart(o.cart);
 
-  const cartSummary = formatCart(o.cart || []);
+      return `
+        <div style="padding:12px;border:1px solid #eee;border-radius:10px;margin-bottom:10px">
+          <strong>${o.order_id}</strong>${total}<br>
+          <small>${ts}</small>
 
-  const statusRaw = o.status ?? 'Placed';
-  const payRaw = o.payment ?? '';
-  const ts = o.timestamp || '';
-  const total = o.total != null ? ` — ₹${o.total}` : '';
+          <div style="margin-top:6px">
+            <strong>${status}</strong>
+            ${payment ? `<span style="color:#666"> (${payment})</span>` : ''}
+          </div>
 
-  // 🔒 SAFE string conversion (ERROR FIX)
-  const cleanStatus = String(statusRaw).trim().toLowerCase();
-  const cleanPay = String(payRaw).trim().toLowerCase();
+          ${cartText ? `<div style="margin-top:8px;color:#666">${cartText}</div>` : ''}
+        </div>
+      `;
+    }).join('');
 
-  /* ❌ CANCEL (before dispatch) */
-  const canCancel =
-    cleanPay === 'cod' &&
-    (cleanStatus === 'placed' || cleanStatus === 'packed');
-
-  /* 🔁 RETURN (within 48 hrs after delivered) */
-  let canReturn = false;
-  if (cleanStatus === 'delivered' && o.delivered_at) {
-    const deliveredAt = new Date(o.delivered_at);
-    if (!isNaN(deliveredAt)) {
-      const diffHrs =
-        (Date.now() - deliveredAt.getTime()) / (1000 * 60 * 60);
-      canReturn = diffHrs <= 48;
-    }
-  }
-
-  return `
-    <div style="padding:10px;border:1px solid #eee;border-radius:8px;margin-bottom:8px">
-      <strong>${o.order_id}</strong>${total}
-      <br><small>${ts}</small>
-
-      <div style="margin-top:6px">
-        <strong>${statusRaw}</strong>
-        ${cleanPay ? `<span style="color:#666;font-size:0.85rem;">(${cleanPay.toUpperCase()})</span>` : ''}
-      </div>
-
-      ${cartSummary ? `
-        <div style="margin-top:8px;color:var(--muted)">
-          ${cartSummary}
-        </div>` : ''}
-
-      ${(canCancel || canReturn) ? `
-        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
-
-          ${canCancel ? `
-            <button class="btn"
-              style="background:#fee2e2;color:#b91c1c"
-              onclick="cancelOrderFromSite('${o.order_id}')">
-              Cancel Order
-            </button>` : ''}
-
-          ${canReturn ? `
-            <button class="btn"
-              style="background:#fff7ed;color:#c2410c"
-              onclick="returnOrderFromSite('${o.order_id}')">
-              Return Order
-            </button>` : ''}
-
-        </div>` : ''}
-    </div>
-  `;
-}).join('');
-
-
-  } 
-  catch(err){
+  }catch(err){
     console.error(err);
     container.innerHTML = '<p class="small-muted">Unable to load orders.</p>';
   }
 }
+
+
+  
 function renderOrdersPage(){ showMyOrdersList(); }
 
 async function cancelOrderFromSite(orderId){
