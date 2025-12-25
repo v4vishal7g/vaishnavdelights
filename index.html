@@ -1324,7 +1324,7 @@ body{
 
 <script>
 /* ------------------------- CONFIG ------------------------- */
-const API_URL = "https://script.google.com/macros/s/AKfycbw6AXV5AZxigWD6X8OaVVJCvhZlcY-uRM1LAvPT-2foCY14pACtO4sX-4ViVZjyHQ-M/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyvkZDBumQOt_w038XW8n6dtT7gM2ErQ0q3GJN4M-D9OOlmRJ1-N2k8oQ1otJw1mKrB/exec";
 const RAZORPAY_KEY = "rzp_live_RukjWIITK7i5hU"; // TODO change to your Razorpay key
 
 
@@ -3067,28 +3067,7 @@ function loadOrderTimeline(orderId, currentStatus){
   });
 }
 
-  function listOrdersByEmail(p){
-  const email = normalizeEmail(p.email);
-  const d = sh(SHEET_ORDERS).getDataRange().getValues();
-  const out = [];
-
-  for(let i = 1; i < d.length; i++){
-    const rowEmail = normalizeEmail(d[i][1]);
-    if(rowEmail === email){
-      out.push({
-        order_id: d[i][0],
-        email: d[i][1],
-        total: d[i][7],
-        cart: d[i][8],
-        status: d[i][9],
-        payment: d[i][5],
-        timestamp: d[i][10]
-      });
-    }
-  }
-
-  return { status:'ok', orders: out };
-}
+  
 
 
 </script>
