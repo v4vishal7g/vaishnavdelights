@@ -1196,35 +1196,11 @@ body{
 
       <div id="trackResult" style="margin-top:12px"></div>
    <div id="orderTimeline" class="order-timeline" style="display:none"></div>
-
-  <div class="timeline-step active">
-    <span class="dot"></span>
-    <div class="content">
-      <strong>Order Confirmed</strong>
-      <small>25/12/2025, 15:53</small>
-    </div>
-  </div>
-
-  <div class="timeline-step">
-    <span class="dot"></span>
-    <div class="content">
-      <strong>Packed</strong>
-      <small>Seller has processed your order</small>
-    </div>
-  </div>
-
-  <div class="timeline-step">
-    <span class="dot"></span>
-    <div class="content">
-      <strong>Shipped</strong>
-    </div>
-  </div>
 </div>
 
 
     </div>
   </div>
-</div>
 
 <div id="accountPage" class="page">
   <div class="container" style="max-width:720px;margin-top:24px">
@@ -3205,11 +3181,14 @@ function renderStatusTimeline(currentStatus){
       if(i === index) el.classList.add('active');
     });
 }
+  function renderTimeline(currentStatus){
+  renderStatusTimeline(currentStatus);
+}
+
 
 function loadOrderTimeline(orderId, currentStatus){
   document.getElementById('orderTimeline').style.display = 'block';
 
-  renderTimeline(currentStatus);
 
   fetch(API_URL,{
     method:'POST',
@@ -3255,13 +3234,14 @@ async function loadAddressesFromServer(){
   }
 }
 
- function renderEventsTimeline(events){
+function renderEventsTimeline(events){
   const box = document.getElementById('orderTimeline');
   if(!box) return;
 
+  box.style.display = 'block';
   box.innerHTML = '';
 
-  events.forEach(e => {
+  events.forEach((e, i) => {
     box.innerHTML += `
       <div class="timeline-step active">
         <span class="dot"></span>
@@ -3273,6 +3253,7 @@ async function loadAddressesFromServer(){
     `;
   });
 }
+
 
 
 
