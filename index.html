@@ -1447,7 +1447,7 @@ body{
 
 <script>
 /* ------------------------- CONFIG ------------------------- */
-const API_URL = "https://script.google.com/macros/s/AKfycbyt3D8rA1o6R3ryhHOkpcAUqqtRrIb4V2or4Wty4aoNjQMTxKv4I4KsRfAVIPcJJHGg/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwmRPNVEItdyFfv50O7gfXWWAdZhFjJInFszdwKbms6g0nvOqt86wNDGWDVMF2vfTk2/exec";
 const RAZORPAY_KEY = "rzp_live_RukjWIITK7i5hU"; // TODO change to your Razorpay key
 
 
@@ -3255,7 +3255,7 @@ async function loadAddressesFromServer(){
   }
 }
 
-  function renderEventsTimeline(events){
+ function renderEventsTimeline(events){
   const box = document.getElementById('orderTimeline');
   if(!box) return;
 
@@ -3266,8 +3266,8 @@ async function loadAddressesFromServer(){
       <div class="timeline-step active">
         <span class="dot"></span>
         <div class="content">
-          <strong>${e.text}</strong>
-          <small>${new Date(e.time).toLocaleString()}</small>
+          <strong>${e.title}</strong>
+          <small>${new Date(e.timestamp).toLocaleString()}</small>
         </div>
       </div>
     `;
