@@ -2576,10 +2576,14 @@ function goCheckout(){
   renderSavedAddressUI();
   switchPage('checkoutAddressPage');
 }
-function saveAddressAndContinue(){
+
+
+  function saveAddressAndContinue(){
+
   const addr = {
     fname: co_fname.value.trim(),
     lname: co_lname.value.trim(),
+    phone: co_phone.value.trim(), // 🔥 MUST BE SAVED HERE
     house: co_house.value.trim(),
     area: co_area.value.trim(),
     landmark: co_landmark.value.trim(),
@@ -2595,28 +2599,30 @@ function saveAddressAndContinue(){
     return;
   }
 
-  // ✅ PHONE SAVE (FIX)
-  window._selectedPhone = co_phone.value.trim();
-  if(window._selectedPhone.length !== 10){
+  if(!addr.phone || addr.phone.length !== 10){
     showToast('Enter valid 10 digit mobile number');
     return;
   }
 
+  // ✅ save address list
   let list = getSavedAddresses();
   list.unshift(addr);
   localStorage.setItem(addressKey(), JSON.stringify(list.slice(0,5)));
 
+  // ✅ set selected values
   window._selectedAddress =
     `${addr.house}, ${addr.area}, ${addr.landmark ? addr.landmark+', ' : ''}${addr.city}, ${addr.state} - ${addr.pincode} (${addr.type})`;
 
+  window._selectedPhone = addr.phone;
+
   renderSavedAddressUI();
-  document.getElementById('continuePayBtn').style.display = 'block';
+
+  const btn = document.getElementById('continuePayBtn');
+  if(btn) btn.style.display = 'block';
 }
 
-   
 
-
-
+  
 document.addEventListener('change', e=>{
   if(e.target.name === 'pay'){
     updatePaymentTotal();
@@ -2788,22 +2794,25 @@ function cancelAddAddress(){
 
 function selectSavedAddress(i){
   const a = getSavedAddresses()[i];
-  if(!a){
-    window._selectedAddress = null;
-    return;
-  }
+  if(!a) return;
 
+  // ✅ address always set
   window._selectedAddress =
     `${a.house}, ${a.area}, ${a.landmark ? a.landmark+', ' : ''}${a.city}, ${a.state} - ${a.pincode} (${a.type})`;
 
-  // ✅ Show correct Continue button
+  // ✅ phone MUST exist
+  window._selectedPhone = a.phone;
+
+  // safety
+  if(!window._selectedPhone){
+    console.error('Phone missing in saved address', a);
+  }
+
+  // ✅ show continue button
   const btn = document.getElementById('continuePayBtn');
   if(btn) btn.style.display = 'block';
-
-  window._selectedPhone = a.phone || window._selectedPhone || '';
-
-  document.getElementById('continuePayBtn').style.display = 'block';
 }
+
 
 
 function showAddressForm(){
