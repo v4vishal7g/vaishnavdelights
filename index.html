@@ -674,6 +674,83 @@ body{
   );
 }
 
+.order-tracking{
+  display:flex;
+  gap:20px;
+  margin-top:20px;
+}
+
+.timeline{
+  width:200px;
+  position:relative;
+}
+
+.step{
+  padding-left:30px;
+  margin-bottom:24px;
+  position:relative;
+  color:#999;
+}
+
+.step::before{
+  content:'';
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  background:#ccc;
+  position:absolute;
+  left:0;
+  top:4px;
+}
+
+.step::after{
+  content:'';
+  width:2px;
+  height:100%;
+  background:#ccc;
+  position:absolute;
+  left:5px;
+  top:16px;
+}
+
+.step:last-child::after{
+  display:none;
+}
+
+.step.done{
+  color:#16a34a;
+}
+
+.step.done::before{
+  background:#16a34a;
+}
+
+.step.active{
+  color:#2563eb;
+  font-weight:600;
+}
+
+.step.active::before{
+  background:#2563eb;
+}
+
+.events{
+  flex:1;
+}
+
+.event{
+  margin-bottom:16px;
+}
+
+.event-title{
+  font-size:14px;
+  font-weight:500;
+}
+
+.event-time{
+  font-size:12px;
+  color:#777;
+}
 
 
 
@@ -1004,6 +1081,24 @@ body{
 </div>
 
       <div id="trackResult" style="margin-top:12px"></div>
+      <div id="orderTimeline" style="display:none">
+
+  <div class="order-tracking">
+
+    <div class="timeline">
+      <div class="step">Order Confirmed</div>
+      <div class="step">Packed</div>
+      <div class="step">Shipped</div>
+      <div class="step">Out for Delivery</div>
+      <div class="step">Delivered</div>
+    </div>
+
+    <div class="events" id="events"></div>
+
+  </div>
+
+</div>
+
     </div>
   </div>
 </div>
@@ -1229,7 +1324,7 @@ body{
 
 <script>
 /* ------------------------- CONFIG ------------------------- */
-const API_URL = "https://script.google.com/macros/s/AKfycbzumyuk1HIo5XXwd2h_7FLrWzBPr68SSoLiLumG2TaE5L_GWhnaqzFMzYIgXK650K7C/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzz6CLsJCQifyq5TIv5oDimHidzgvgH8r0FYLYVRQg2iExoxdbZywqueAAbxAuK-5k/exec";
 const RAZORPAY_KEY = "rzp_live_RukjWIITK7i5hU"; // TODO change to your Razorpay key
 
 
@@ -2277,71 +2372,125 @@ function togglePassword(inputId, eyeId) {
   }
 }
 /* ------------------ Track functions + button bindings (PATCH) ------------------ */
-
 async function trackOrder(){
   const idEl = document.getElementById('trackOrderId');
   const container = document.getElementById('trackResult');
+  const timelineBox = document.getElementById('orderTimeline');
+
   if(!container) return;
+
   const id = (idEl?.value || '').toString().trim();
   container.innerHTML = '';
+  if(timelineBox) timelineBox.style.display = 'none';
+
   if(!id){
     container.innerHTML = '<p class="small-muted">Enter order ID to track.</p>';
     return;
   }
 
-  // show immediate UI feedback
+  // Immediate feedback
   container.innerHTML = '<p class="small-muted">Checking order…</p>';
+
   try {
-    // ask server
-    const resp = await apiCall({ action: 'track_order', order_id: id }, { showLoading: true, loadingText: 'Checking order…' });
+    /* ================= SERVER TRACK ================= */
+    const resp = await apiCall(
+      { action: 'track_order', order_id: id },
+      { showLoading: true, loadingText: 'Checking order…' }
+    );
+
     if(resp && resp.status === 'ok' && resp.order){
       const o = resp.order;
+
       const cartHtml = (function(cartData){
-        try {
-          const arr = (typeof cartData === 'string') ? JSON.parse(cartData) : cartData;
+        try{
+          const arr = (typeof cartData === 'string')
+            ? JSON.parse(cartData)
+            : cartData;
           if(!Array.isArray(arr)) return '';
-          return '<ul style="margin:8px 0 0 18px">' + arr.map(i => `<li>${(i.displayName||i.name||'Item')} × ${i.q||i.qty||1}${(i.price!=null?(' — ₹'+i.price):'')}</li>`).join('') + '</ul>';
-        } catch(e){ return ''; }
+          return `
+            <ul style="margin:8px 0 0 18px">
+              ${arr.map(i =>
+                `<li>${(i.displayName||i.name||'Item')} × ${i.q||i.qty||1}${i.price!=null ? ' — ₹'+i.price : ''}</li>`
+              ).join('')}
+            </ul>`;
+        }catch(e){ return ''; }
       })(o.cart);
 
-      container.innerHTML = `<div style="padding:10px;border:1px solid #eee;border-radius:8px">
-        <strong>${o.order_id}</strong>
-        <div style="margin-top:6px">Status: <strong>${o.status || 'Placed'}</strong></div>
-        <div>ETA: ${(o.eta || '5-7 days based on location')}</div>
-        ${cartHtml ? `<div style="margin-top:8px">${cartHtml}</div>` : ''}
-        <div style="margin-top:8px;color:var(--muted)"><small>${o.timestamp || ''}</small></div>
-      </div>`;
+      container.innerHTML = `
+        <div style="padding:12px;border:1px solid #eee;border-radius:10px">
+          <strong>${o.order_id}</strong>
+          <div style="margin-top:6px">
+            Status: <strong>${o.status || 'Placed'}</strong>
+          </div>
+          <div>ETA: ${o.eta || '5–7 days based on location'}</div>
+          ${cartHtml ? `<div style="margin-top:8px">${cartHtml}</div>` : ''}
+          <div style="margin-top:8px;color:#777">
+            <small>${o.timestamp || ''}</small>
+          </div>
+        </div>
+      `;
+
+      /* 🔥 FLIPKART STYLE TIMELINE */
+      loadOrderTimeline(o.order_id, o.status || 'Placed');
+
       return;
     }
 
-    // fallback: check locally saved orders (recent client-side orders)
+    /* ================= LOCAL FALLBACK ================= */
+    const myOrders = loadMyOrders ? loadMyOrders() : [];
     const found = myOrders.find(x => x.order_id === id);
+
     if(found){
       const cartHtml = (function(cartData){
-        try {
-          const arr = (typeof cartData === 'string') ? JSON.parse(cartData) : cartData;
+        try{
+          const arr = (typeof cartData === 'string')
+            ? JSON.parse(cartData)
+            : cartData;
           if(!Array.isArray(arr)) return '';
-          return '<ul style="margin:8px 0 0 18px">' + arr.map(i => `<li>${(i.displayName||i.name||'Item')} × ${i.q||i.qty||1}${(i.price!=null?(' — ₹'+i.price):'')}</li>`).join('') + '</ul>';
-        } catch(e){ return ''; }
+          return `
+            <ul style="margin:8px 0 0 18px">
+              ${arr.map(i =>
+                `<li>${(i.displayName||i.name||'Item')} × ${i.q||i.qty||1}${i.price!=null ? ' — ₹'+i.price : ''}</li>`
+              ).join('')}
+            </ul>`;
+        }catch(e){ return ''; }
       })(found.cart);
 
-      container.innerHTML = `<div style="padding:10px;border:1px solid #eee;border-radius:8px">
-        <strong>${found.order_id}</strong>
-        <div style="margin-top:6px">Status: <strong>${found.status || 'Placed'}</strong></div>
-        <div>ETA: 5-7 days based on location</div>
-        ${cartHtml ? `<div style="margin-top:8px">${cartHtml}</div>` : ''}
-        <div style="margin-top:8px;color:var(--muted)"><small>${found.timestamp || ''}</small></div>
-      </div>`;
+      container.innerHTML = `
+        <div style="padding:12px;border:1px solid #eee;border-radius:10px">
+          <strong>${found.order_id}</strong>
+          <div style="margin-top:6px">
+            Status: <strong>${found.status || 'Placed'}</strong>
+          </div>
+          <div>ETA: 5–7 days based on location</div>
+          ${cartHtml ? `<div style="margin-top:8px">${cartHtml}</div>` : ''}
+          <div style="margin-top:8px;color:#777">
+            <small>${found.timestamp || ''}</small>
+          </div>
+        </div>
+      `;
+
+      /* 🔥 TIMELINE FOR LOCAL ORDER */
+      loadOrderTimeline(found.order_id, found.status || 'Placed');
+
       return;
     }
 
-    // not found
-    container.innerHTML = `<p class="small-muted">No tracking info found. If you just placed the order, wait a few minutes or contact support.</p>`;
+    /* ================= NOT FOUND ================= */
+    container.innerHTML = `
+      <p class="small-muted">
+        No tracking info found.  
+        If you just placed the order, please wait a few minutes or contact support.
+      </p>
+    `;
+
   } catch (err) {
     console.error('trackOrder error', err);
-    container.innerHTML = '<p class="small-muted">Network error while tracking. Try again later.</p>';
+    container.innerHTML =
+      '<p class="small-muted">Network error while tracking. Try again later.</p>';
   }
 }
+
 
 function showRecentOrders(){
   try{
@@ -2868,6 +3017,54 @@ function handlePaymentAction(){
   total += 40;
 
   placeFinalOrder('cod', total);
+}
+const ORDER_STEPS = [
+  'Order Confirmed',
+  'Packed',
+  'Shipped',
+  'Out for Delivery',
+  'Delivered'
+];
+
+function renderTimeline(currentStatus){
+  const index = ORDER_STEPS.indexOf(currentStatus);
+
+  document.querySelectorAll('.timeline .step')
+    .forEach((el,i)=>{
+      el.classList.remove('done','active');
+      if(i < index) el.classList.add('done');
+      if(i === index) el.classList.add('active');
+    });
+}
+
+function loadOrderTimeline(orderId, currentStatus){
+  document.getElementById('orderTimeline').style.display = 'block';
+
+  renderTimeline(currentStatus);
+
+  fetch(API_URL,{
+    method:'POST',
+    body:new URLSearchParams({
+      action:'get_order_events',
+      order_id:orderId
+    })
+  })
+  .then(r=>r.json())
+  .then(res=>{
+    const box = document.getElementById('events');
+    box.innerHTML='';
+
+    res.events.forEach(e=>{
+      box.innerHTML += `
+        <div class="event">
+          <div class="event-title">${e.title}</div>
+          <div class="event-time">
+            ${new Date(e.timestamp).toLocaleString()}
+          </div>
+        </div>
+      `;
+    });
+  });
 }
 
 
