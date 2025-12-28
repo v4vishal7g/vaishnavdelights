@@ -2887,18 +2887,25 @@ function calculateCartTotal(){
     return sum + (Number(item.price) * Number(item.q));
   }, 0);
 }
-function updatePaymentTotal(){
+
+function getPayableTotal(){
   let total = calculateCartTotal();
-  const pay = document.querySelector('input[name="pay"]:checked')?.value;
 
-  if(pay === 'cod') total += 40;
+  if(appliedCoupon){
+    total -= discountAmount;
+  }
 
-  document.getElementById('finalTotal').innerText = total;
-  document.getElementById('codNote').style.display =
-    pay === 'cod' ? 'block' : 'none';
+  const pay =
+    document.querySelector('input[name="pay"]:checked')?.value;
+
+  if(pay === 'cod'){
+    total += 40;
+  }
+
+  return total;
 }
 
-
+  
 function selectPay(method){
   document.querySelectorAll('.pay-box').forEach(b=>b.classList.remove('active'));
 
@@ -2907,11 +2914,8 @@ function selectPay(method){
     radio.checked = true;
     radio.closest('.pay-box').classList.add('active');
   }
+updateFinalTotal();
 
-  let total = calculateCartTotal();
-  if(method === 'cod') total += 40;
-
-  document.getElementById('finalTotal').innerText = total;
   document.getElementById('codNote').style.display =
     method === 'cod' ? 'block' : 'none';
 
@@ -3181,8 +3185,9 @@ async function startOnlinePayment(){
     switchPage('checkoutAddressPage');
     return;
   }
+  let total = getPayableTotal();
 
-  let total = calculateCartTotal();
+
   const payMethod =
     document.querySelector('input[name="pay"]:checked')?.value || 'upi';
 
@@ -3269,10 +3274,8 @@ function handlePaymentAction(){
     return;
   }
 
-  let total = calculateCartTotal();
+ let total = getPayableTotal();
 
-  // COD charge
-  total += 40;
 
   placeFinalOrder('cod', total);
 }
@@ -3415,19 +3418,10 @@ let discountAmount = 0;
 
 
 function updateFinalTotal(){
-  let total = calculateCartTotal(); // 1299
-
-  if(appliedCoupon){
-    total -= discountAmount;        // 10% minus
-  }
-
-  const pay = document.querySelector('input[name="pay"]:checked')?.value;
-  if(pay === 'cod'){
-    total += 40;
-  }
-
-  document.getElementById('finalTotal').innerText = total;
+  document.getElementById('finalTotal').innerText =
+    getPayableTotal();
 }
+
 
 
 
