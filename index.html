@@ -1175,6 +1175,20 @@ body{
       </p>
 
       <!-- TOTAL (LEFT - RIGHT) -->
+      <!-- COUPON BOX -->
+<div style="margin-top:14px">
+  <label>Apply Coupon</label>
+  <div style="display:flex;gap:8px">
+    <input
+      id="couponInput"
+      placeholder="Enter coupon code"
+      style="flex:1"
+    >
+    <button class="btn" onclick="applyCoupon()">Apply</button>
+  </div>
+  <p id="couponMsg" class="small-muted" style="margin-top:6px"></p>
+</div>
+
       <div class="summary-row" style="margin-top:16px">
         <strong>Total</strong>
         <strong>₹<span id="finalTotal">0</span></strong>
@@ -3369,6 +3383,60 @@ function renderEventsTimeline(events){
     `;
   }).join('');
 }
+
+  /* ===== FIXED 10% COUPON ONLY ===== */
+
+const VALID_COUPON = "SAVE10";
+let appliedCoupon = false;
+let discountAmount = 0;
+
+function applyCoupon(){
+  const code = document.getElementById('couponInput').value
+    .trim().toUpperCase();
+  const msg = document.getElementById('couponMsg');
+
+  if(!code){
+    msg.innerText = "Enter coupon code";
+    return;
+  }
+
+  if(code !== VALID_COUPON){
+    msg.innerText = "Invalid coupon ❌";
+    return;
+  }
+
+  const cartTotal = calculateCartTotal();
+
+  // 🔒 sirf 10% hi
+  discountAmount = Math.round(cartTotal * 0.10);
+
+  appliedCoupon = true;
+
+  updateFinalTotal();
+
+  msg.innerHTML = `
+    Coupon <strong>${VALID_COUPON}</strong> applied ✅ <br>
+    You saved ₹${discountAmount}
+  `;
+}
+
+  function updateFinalTotal(){
+  let total = calculateCartTotal();
+
+  // ✅ apply 10% discount
+  if(appliedCoupon){
+    total -= discountAmount;
+  }
+
+  // COD charge (discount ke baad)
+  const pay = document.querySelector('input[name="pay"]:checked')?.value;
+  if(pay === 'cod'){
+    total += 40;
+  }
+
+  document.getElementById('finalTotal').innerText = total;
+}
+
 
 
 </script>
