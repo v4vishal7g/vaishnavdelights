@@ -3386,49 +3386,41 @@ function renderEventsTimeline(events){
 
   /* ===== FIXED 10% COUPON ONLY ===== */
 
-const VALID_COUPON = "SAVE10";
+const VALID_COUPON = "VD2026";
 let appliedCoupon = false;
 let discountAmount = 0;
-
-function applyCoupon(){
+  function applyCoupon(){
   const code = document.getElementById('couponInput').value
     .trim().toUpperCase();
   const msg = document.getElementById('couponMsg');
 
-  if(!code){
-    msg.innerText = "Enter coupon code";
+  if(code !== 'VD2026'){
+    msg.innerText = 'Invalid coupon ❌';
     return;
   }
 
-  if(code !== VALID_COUPON){
-    msg.innerText = "Invalid coupon ❌";
-    return;
-  }
-
-  const cartTotal = calculateCartTotal();
-
-  // 🔒 sirf 10% hi
-  discountAmount = Math.round(cartTotal * 0.10);
-
+  const cartTotal = calculateCartTotal(); // 1299
+  discountAmount = Math.round(cartTotal * 0.10); // 130
   appliedCoupon = true;
 
-  updateFinalTotal();
+  updateFinalTotal(); // 🔥🔥🔥 YAHI FIX HAI
 
   msg.innerHTML = `
-    Coupon <strong>${VALID_COUPON}</strong> applied ✅ <br>
+    Coupon <strong>VD2026</strong> applied ✅ <br>
     You saved ₹${discountAmount}
   `;
 }
 
-  function updateFinalTotal(){
-  let total = calculateCartTotal();
 
-  // ✅ apply 10% discount
+
+
+function updateFinalTotal(){
+  let total = calculateCartTotal(); // 1299
+
   if(appliedCoupon){
-    total -= discountAmount;
+    total -= discountAmount;        // 10% minus
   }
 
-  // COD charge (discount ke baad)
   const pay = document.querySelector('input[name="pay"]:checked')?.value;
   if(pay === 'cod'){
     total += 40;
