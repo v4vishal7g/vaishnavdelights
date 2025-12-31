@@ -1975,11 +1975,30 @@ const formatCart = (cartData)=>{
       const ts = o.timestamp || '';
       const total = o.total ? ` — ₹${o.total}` : '';
       const cartText = formatCart(o.cart);
-      const cleanStatus = String(o.status || '').toLowerCase();
+     const cleanStatus = String(o.status || '').toLowerCase();
 
-   const canCancel =
-  cleanStatus === 'placed' ||
-  cleanStatus === 'packed';
+// ⏰ hours since delivery
+let diffHours = 999;
+if(o.delivered_at){
+  diffHours =
+    (new Date() - new Date(o.delivered_at)) / 36e5;
+} else {
+  diffHours = 999; // disable return safely
+}
+
+// ❌ Cancel (already implemented earlier)
+const canCancel =
+  !canReturn &&
+  diffHours <= 48 &&
+  (cleanStatus === 'placed' || cleanStatus === 'packed');
+
+// 🔁 Return (NEW)
+const canReturn =
+  cleanStatus === 'delivered' &&
+  !o.return_status &&
+  diffHours <= 48;
+
+
 
   return `
   <div style="
@@ -2001,6 +2020,23 @@ const formatCart = (cartData)=>{
 
     <!-- PRODUCTS -->
     ${formatCart(o.cart)}
+    ${ o.return_status
+  ? `<p class="small-muted" style="margin-top:8px">
+       Return Status: <strong style="
+  color:${
+    o.return_status === 'Accepted'
+      ? '#16a34a'
+      : o.return_status === 'Rejected'
+      ? '#dc2626'
+      : '#2563eb'
+  }
+">
+  ${o.return_status}
+</strong>
+
+     </p>`
+  : ''
+}
 
     <!-- BOTTOM -->
     <div style="
@@ -2021,6 +2057,15 @@ const formatCart = (cartData)=>{
             </button>`
           : ''
       }
+      ${
+  canReturn
+    ? `<button class="btn"
+        onclick="requestReturn('${o.order_id}')">
+        Request Return
+      </button>`
+    : ''
+}
+
     </div>
 
   </div>
@@ -3423,6 +3468,22 @@ function updateFinalTotal(){
 }
 
 
+async function requestReturn(orderId){
+  if(!confirm('Request return for this order?')) return;
+
+  const res = await apiCall({
+    action:'request_return',
+    order_id:orderId,
+    email: currentUser.email
+  }, { showLoading:true });
+
+  if(res.status==='ok'){
+    showToast('Return request submitted');
+    showMyOrdersList();
+  }else{
+    showToast(res.message);
+  }
+}
 
 
 </script>
