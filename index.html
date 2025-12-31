@@ -1978,12 +1978,10 @@ const formatCart = (cartData)=>{
      const cleanStatus = String(o.status || '').toLowerCase();
 
 // ⏰ hours since delivery
-let diffHours = 999;
-if(o.delivered_at){
-  diffHours =
-    (new Date() - new Date(o.delivered_at)) / 36e5;
-} else {
-  diffHours = 999; // disable return safely
+let orderHours = 999;
+if(o.timestamp){
+  orderHours =
+    (new Date() - new Date(o.timestamp)) / 36e5;
 }
 
 // 🔁 Return (define FIRST)
@@ -1994,9 +1992,12 @@ const canReturn =
 
 // ❌ Cancel (depends on canReturn)
 const canCancel =
-  !canReturn &&
-  diffHours <= 48 &&
-  (cleanStatus === 'placed' || cleanStatus === 'packed');
+  orderHours <= 48 &&
+  (
+    cleanStatus === 'placed' ||
+    cleanStatus === 'packed'
+  );
+
 
 
 
