@@ -1467,7 +1467,7 @@ body{
 
 <script>
 /* ------------------------- CONFIG ------------------------- */
-const API_URL = "https://script.google.com/macros/s/AKfycbwmRPNVEItdyFfv50O7gfXWWAdZhFjJInFszdwKbms6g0nvOqt86wNDGWDVMF2vfTk2/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbz61ulzfqpjgzzZTAymjQH-vCtqxT0g9uegPYMahZRyTk1Pad8MtThClKrXM350JHc1/exec";
 const RAZORPAY_KEY = "rzp_live_RukjWIITK7i5hU"; // TODO change to your Razorpay key
 
 
@@ -2531,7 +2531,7 @@ async function renderAdminOrders(){
     if(!d || d.status !== 'ok' || !Array.isArray(d.orders)){
       document.getElementById('adminOrders').innerHTML = '<p class="small-muted">No orders or list endpoint not configured.</p>'; return;
     }
-    const html = d.orders.map(o => {
+  const html = d.orders.map(o => {
   const status = String(o.status || '').toLowerCase();
 
   const canDeliver =
@@ -2539,6 +2539,7 @@ async function renderAdminOrders(){
 
   return `
     <div style="padding:10px;border:1px solid #eee;border-radius:8px;margin-bottom:8px">
+
       <strong>${o.order_id}</strong> — ₹${o.total}<br>
       <small>${o.timestamp}</small>
 
@@ -2555,10 +2556,26 @@ async function renderAdminOrders(){
             onclick="markDelivered('${o.order_id}')">
             Mark Delivered
           </button>
-        </div>` : ''}
+        </div>
+      ` : ''}
+
+      ${o.return_status === 'Requested' ? `
+        <div style="margin-top:10px;display:flex;gap:8px">
+          <button class="btn"
+            onclick="adminAcceptReturn('${o.order_id}')">
+            Accept Return
+          </button>
+          <button class="btn btn-danger"
+            onclick="adminRejectReturn('${o.order_id}')">
+            Reject Return
+          </button>
+        </div>
+      ` : ''}
+
     </div>
   `;
 }).join('');
+
 
     document.getElementById('adminOrders').innerHTML = html;
   }catch(err){
@@ -3486,6 +3503,39 @@ async function requestReturn(orderId){
   }
 }
 
+async function adminAcceptReturn(orderId){
+  if(!confirm('Accept return for this order?')) return;
+
+  const res = await apiCall({
+    action:'accept_return',
+    order_id: orderId,
+    email: currentUser.email
+  });
+
+  if(res.status === 'ok'){
+    showToast('Return accepted');
+    renderAdminOrders();
+  }else{
+    showToast(res.message);
+  }
+}
+
+async function adminRejectReturn(orderId){
+  if(!confirm('Reject return for this order?')) return;
+
+  const res = await apiCall({
+    action:'reject_return',
+    order_id: orderId,
+    email: currentUser.email
+  });
+
+  if(res.status === 'ok'){
+    showToast('Return rejected');
+    renderAdminOrders();
+  }else{
+    showToast(res.message);
+  }
+}
 
 </script>
 </body>
