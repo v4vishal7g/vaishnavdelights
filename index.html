@@ -1986,17 +1986,18 @@ if(o.delivered_at){
   diffHours = 999; // disable return safely
 }
 
-// ❌ Cancel (already implemented earlier)
+// 🔁 Return (define FIRST)
+const canReturn =
+  cleanStatus === 'delivered' &&
+  !o.return_status &&
+  diffHours <= 48;
+
+// ❌ Cancel (depends on canReturn)
 const canCancel =
   !canReturn &&
   diffHours <= 48 &&
   (cleanStatus === 'placed' || cleanStatus === 'packed');
 
-// 🔁 Return (NEW)
-const canReturn =
-  cleanStatus === 'delivered' &&
-  !o.return_status &&
-  diffHours <= 48;
 
 
 
