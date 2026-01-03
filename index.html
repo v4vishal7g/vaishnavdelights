@@ -2128,12 +2128,8 @@ async function serverGetUser(email){
 
 /* SIGNUP via OTP -> create user on server after OTP verifies */
 async function signupWithOTP(){
-  try {
-
-    // 🔥 1. SHOW LOADER FIRST (IMMEDIATE)
+  try{
     showLoader('Sending code…');
-
-    // 🔥 2. LET UI PAINT
     await new Promise(r => setTimeout(r, 0));
 
     const name = document.getElementById('su_name').value.trim();
@@ -2146,7 +2142,6 @@ async function signupWithOTP(){
       return;
     }
 
-    // ⏳ THIS WAS BLOCKING UI BEFORE
     const existing = await serverGetUser(email);
     if(existing){
       hideLoader();
@@ -2155,23 +2150,19 @@ async function signupWithOTP(){
       return;
     }
 
-    // 🔥 SEND OTP (fire & forget)
-    apiCall(
+    // SEND OTP
+    await apiCall(
       { action:'send_otp_email', email, purpose:'signup' },
       { showLoading:false }
-    ).catch(()=>{});
+    );
 
-    // 🚀 QUICK UX FEEDBACK
-    setTimeout(() => {
-      hideLoader();
-      showToast('Code sent to email');
-    }, 500);
+    hideLoader();
+    showToast('Code sent to email');
 
     showModal(
       'Enter code',
       `A code was sent to ${email}. Enter it below.`,
       async function(code){
-
         const ok = await verifyOtpOnServer(email, code, 'signup');
         if(!ok) return;
 
@@ -2194,12 +2185,18 @@ async function signupWithOTP(){
         loadCart();
         await loadAddressesFromServer();
         closeOtpModal();
+
         showToast('Signup successful');
         switchPage('customerPage');
       }
     );
 
-  } catch(err){
+    // 🔥 RESEND OTP TIMER (AFTER MODAL DOM READY)
+    setTimeout(() => {
+      startOtpTimer(email, 'signup');
+    }, 200);
+
+  }catch(err){
     console.error(err);
     hideLoader();
     showToast('Network error');
@@ -2269,7 +2266,6 @@ async function loginWithPassword(){
 async function sendLoginOTP(){
   const emailEl = document.getElementById('login_otp_email');
   const email = (emailEl?.value || '').trim().toLowerCase();
-
   const msgEl = document.getElementById('log_msg');
 
   if(!email){
@@ -2299,39 +2295,38 @@ async function sendLoginOTP(){
 
   showToast('Code sent to email');
 
- showModal(
-  'Enter code',
-  `A code was sent to ${email}. Enter it to login.`,
-  async function(code){
-    const ok = await verifyOtpOnServer(email, code, 'login');
-    if(!ok) return;
+  showModal(
+    'Enter code',
+    `A code was sent to ${email}. Enter it to login.`,
+    async function(code){
+      const ok = await verifyOtpOnServer(email, code, 'login');
+      if(!ok) return;
 
-    closeOtpModal();
+      closeOtpModal();
 
-    const role = user.role || 'customer';
-    const name = user.name || user.email.split('@')[0];
+      const role = user.role || 'customer';
+      const name = user.name || user.email.split('@')[0];
 
-    localStorage.setItem('email', user.email);
-    localStorage.setItem('role', role);
-    localStorage.setItem('name', name);
+      localStorage.setItem('email', user.email);
+      localStorage.setItem('role', role);
+      localStorage.setItem('name', name);
 
-    currentUser = { email: user.email, role, name };
+      currentUser = { email: user.email, role, name };
 
-    loadCart();
-    loadWish();
-    await loadAddressesFromServer();
+      loadCart();
+      loadWish();
+      await loadAddressesFromServer();
 
-    showToast('Logged in');
-    switchPage('customerPage');
-  }
-);
+      showToast('Logged in');
+      switchPage('customerPage');
+    }
+  );
 
-// 🔥🔥🔥 IMPORTANT FIX
-setTimeout(() => {
-  startOtpTimer(email, 'login');
-}, 200);
-
-
+  // 🔥 RESEND OTP TIMER (AFTER MODAL DOM READY)
+  setTimeout(() => {
+    startOtpTimer(email, 'login');
+  }, 200);
+}
 
 /* Verify OTP on server */
 async function verifyOtpOnServer(email, code, purpose){
