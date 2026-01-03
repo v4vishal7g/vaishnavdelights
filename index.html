@@ -3476,28 +3476,48 @@ function renderEventsTimeline(events){
 }
 
   /* ===== FIXED 10% COUPON ONLY ===== */
-
-const VALID_COUPON = "VD2026";
 let appliedCoupon = false;
 let discountAmount = 0;
-  function applyCoupon(){
-  const code = document.getElementById('couponInput').value
-    .trim().toUpperCase();
-  const msg = document.getElementById('couponMsg');
+let appliedCouponCode = '';
 
-  if(code !== 'VD2026'){
-    msg.innerText = 'Invalid coupon ❌';
+function applyCoupon(){
+
+  const input = document.getElementById('couponInput');
+  const msg   = document.getElementById('couponMsg');
+
+  if(!input || !msg){
+    console.warn('Coupon UI missing');
     return;
   }
 
-  const cartTotal = calculateCartTotal(); // 1299
-  discountAmount = Math.round(cartTotal * 0.10); // 130
-  appliedCoupon = true;
+  const code = input.value.trim().toUpperCase();
 
-  updateFinalTotal(); // 🔥🔥🔥 YAHI FIX HAI
+  if(!code){
+    msg.innerText = 'Enter coupon code';
+    return;
+  }
+
+  // ❌ Frontend validation ONLY for UX
+  if(code !== 'VD2026'){
+    msg.innerText = 'Invalid coupon ❌';
+    appliedCoupon = false;
+    discountAmount = 0;
+    appliedCouponCode = '';
+    updateFinalTotal();
+    return;
+  }
+
+  // 🔐 CART TOTAL (DISPLAY PURPOSE ONLY)
+  const cartTotal = calculateCartTotal();
+
+  discountAmount = Math.round(cartTotal * 0.10); // 10%
+  appliedCoupon = true;
+  appliedCouponCode = code;
+
+  updateFinalTotal(); // ✅ recalc UI total
 
   msg.innerHTML = `
-    Coupon <strong>VD2026</strong> applied ✅ <br>
+    Coupon <strong>${code}</strong> applied ✅<br>
     You saved ₹${discountAmount}
   `;
 }
