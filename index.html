@@ -14,7 +14,6 @@
 <meta name="description" content="Order premium handmade Bihar style thekua online. Authentic taste with jaggery, ghee and whole wheat. Pan India delivery available.">
 <meta name="keywords" content="thekua, buy thekua online, jaggery thekua, bihar thekua, ghee thekua, vaishnav delights">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
 :root{
   --bg:#fff; --text:#111; --muted:#777;
@@ -1887,9 +1886,7 @@ function updateAccountUI(){
 
     if(typeof updateMenuItems === 'function') try{ updateMenuItems(); }catch(e){console.warn('updateMenuItems error',e);}
 
-    if(document.getElementById('ordersListContainer') && typeof showMyOrdersList === 'function'){
-      try{ showMyOrdersList(); }catch(e){ /* ignore */ }
-    }
+    
   }catch(err){
     console.error('updateAccountUI error', err);
   }
@@ -1989,7 +1986,7 @@ const canReturn =
 
 const canCancel =
   orderHours <= 48 &&
-  (cleanStatus === 'placed' || cleanStatus === 'packed');
+  (cleanStatus === 'placed' || cleanStatus === 'confirmed');
 
 
 
