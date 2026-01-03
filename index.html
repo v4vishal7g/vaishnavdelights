@@ -1350,9 +1350,11 @@ body{
     <h3 id="otpModalTitle">Enter code</h3>
     <p id="otpModalDesc" style="color:#555;margin-bottom:8px"></p>
     <input id="otpInput" placeholder="6-digit code" style="margin-bottom:8px">
-    <div style="display:flex;justify-content:flex-end;gap:8px">
-      <button class="btn" onclick="verifyOtpFromModal()">Verify</button>
-     <p style="margin-top:10px;font-size:13px;">
+    <div style="display:flex;justify-content:flex-end">
+  <button class="btn" onclick="verifyOtpFromModal()">Verify</button>
+</div>
+
+<p style="margin-top:10px;font-size:13px;">
   Didn’t receive OTP?
   <span
     id="resendOtp"
@@ -1362,7 +1364,7 @@ body{
   </span>
   <span id="resendTimer"></span>
 </p>
-    </div>
+
     <p id="otpErr" style="color:#e11d48;margin-top:8px"></p>
   </div>
 </div>
@@ -1475,7 +1477,7 @@ body{
 
 <script>
 /* ------------------------- CONFIG ------------------------- */
-const API_URL = "https://script.google.com/macros/s/AKfycbxkQw1HSfCPQ0_AVz37yegHiTw2MwhgW12JH1kFkY42aj7EJ_WKAEcvYpokYMKMxGUD/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxByeXrEGJjLWWZtiIK8eAF77Ttq-Kfb7epMc1PlJUrhKZ2DvBk5bUycnA6u7oF2ydJ/exec";
 const RAZORPAY_KEY = "rzp_live_RukjWIITK7i5hU"; // TODO change to your Razorpay key
 
 
@@ -1635,6 +1637,8 @@ function showToast(msg, ms=2600){
 }
 
 function showModal(title, desc, onVerifyCallback, prefill=''){
+  if(resendInterval) clearInterval(resendInterval);
+
   window._otpCallback = onVerifyCallback;
   const mTitle = document.getElementById('otpModalTitle');
   const mDesc = document.getElementById('otpModalDesc');
@@ -1781,7 +1785,6 @@ function switchPage(id, fromPopstate = false){
   if(id==='ordersPage') renderOrdersPage();
 
   updateAccountUI();
-  closeOtpModal();
   closeMenu();
 
   if (!fromPopstate) {
