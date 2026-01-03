@@ -2966,9 +2966,10 @@ async function saveAddressAndContinue(){
   
 document.addEventListener('change', e=>{
   if(e.target.name === 'pay'){
-    updatePaymentTotal();
+    updateFinalTotal();     // ✅ already defined function
   }
 });
+
 
 function calculateCartTotal(){
   return cart.reduce((sum, item) => {
