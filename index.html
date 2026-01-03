@@ -1977,26 +1977,20 @@ const formatCart = (cartData)=>{
       const cartText = formatCart(o.cart);
      const cleanStatus = String(o.status || '').toLowerCase();
 
-// ⏰ hours since delivery
 let orderHours = 999;
 if(o.timestamp){
-  orderHours =
-    (new Date() - new Date(o.timestamp)) / 36e5;
+  orderHours = (new Date() - new Date(o.timestamp)) / 36e5;
 }
 
-// 🔁 Return (define FIRST)
 const canReturn =
   cleanStatus === 'delivered' &&
   !o.return_status &&
-  diffHours <= 48;
+  orderHours <= 48;
 
-// ❌ Cancel (depends on canReturn)
 const canCancel =
   orderHours <= 48 &&
-  (
-    cleanStatus === 'placed' ||
-    cleanStatus === 'packed'
-  );
+  (cleanStatus === 'placed' || cleanStatus === 'packed');
+
 
 
 
@@ -2085,18 +2079,10 @@ const canCancel =
 
 
   
-async function renderOrdersPage(){
-  const res = await apiCall({
-    action:'list_orders_by_email',
-    email: normalizeEmail(currentUser.email)
-  }, { showLoading:true, loadingText:'Loading orders…' });
-
-  if(res && res.status === 'ok'){
-    showMyOrdersList(res);
-  } else {
-    showToast('Unable to load orders');
-  }
+function renderOrdersPage(){
+  showMyOrdersList();
 }
+
 
 
 async function cancelOrderFromSite(orderId){
