@@ -1477,7 +1477,7 @@ body{
 
 <script>
 /* ------------------------- CONFIG ------------------------- */
-const API_URL = "https://script.google.com/macros/s/AKfycby9KQi91rnxDpPyI_KuPG9xMXUCmu2mzDMFTjozlU-rR_fkgUonxW-N_efaow4gTboj/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyhe1t7KB5WSYffAV--kZvkfTpdnF-achzJZZ66AgBFBHnJMUJO6sg4luU-xiKYgUey/exec";
 const RAZORPAY_KEY = "rzp_live_RukjWIITK7i5hU"; // TODO change to your Razorpay key
 
 
@@ -2979,19 +2979,15 @@ function calculateCartTotal(){
 function getPayableTotal(){
   let total = calculateCartTotal();
 
-  if(appliedCoupon){
-    total -= discountAmount;
-  }
-
   const pay =
     document.querySelector('input[name="pay"]:checked')?.value;
 
   if(pay === 'cod'){
     total += 40;
   }
-
   return total;
 }
+
 
   
 function selectPay(method){
@@ -3027,7 +3023,7 @@ async function placeFinalOrder(paymentMethod, total, paymentId='', rpOrderId='',
     razorpay_order_id: rpOrderId,
     razorpay_signature: rpSignature,
     total: total,
-    cart: JSON.stringify(cart)
+    cart: JSON.stringify(cart),
     coupon_code: appliedCouponCode || ''  
   });
 
@@ -3477,51 +3473,24 @@ function renderEventsTimeline(events){
 }
 
   /* ===== FIXED 10% COUPON ONLY ===== */
-let appliedCoupon = false;
-let discountAmount = 0;
 let appliedCouponCode = '';
 
-function applyCoupon(){
-
+async function applyCoupon(){
   const input = document.getElementById('couponInput');
   const msg   = document.getElementById('couponMsg');
 
-  if(!input || !msg){
-    console.warn('Coupon UI missing');
-    return;
-  }
-
-  const code = input.value.trim().toUpperCase();
-
+  const code = input.value.trim();
   if(!code){
     msg.innerText = 'Enter coupon code';
     return;
   }
 
-  // ❌ Frontend validation ONLY for UX
-  if(code !== 'VD2026'){
-    msg.innerText = 'Invalid coupon ❌';
-    appliedCoupon = false;
-    discountAmount = 0;
-    appliedCouponCode = '';
-    updateFinalTotal();
-    return;
-  }
-
-  // 🔐 CART TOTAL (DISPLAY PURPOSE ONLY)
-  const cartTotal = calculateCartTotal();
-
-  discountAmount = Math.round(cartTotal * 0.10); // 10%
-  appliedCoupon = true;
-  appliedCouponCode = code;
-
-  updateFinalTotal(); // ✅ recalc UI total
-
-  msg.innerHTML = `
-    Coupon <strong>${code}</strong> applied ✅<br>
-    You saved ₹${discountAmount}
-  `;
+  msg.innerText = 'Coupon will be validated at checkout ✅';
+  appliedCouponCode = code.toUpperCase();
 }
+
+  
+  
 
 
 
