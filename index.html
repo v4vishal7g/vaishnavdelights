@@ -1809,17 +1809,7 @@ function closeMenu(){
   dd.setAttribute('aria-hidden','true');
   if(btn) btn.setAttribute('aria-expanded','false');
 }
-document.addEventListener('change', function(e){
-  if(e.target.name === 'pay'){
-    let total = window._checkoutTotal || calculateCartTotal();
 
-    if(e.target.value === 'cod'){
-      total += 40;
-    }
-
-    document.getElementById('finalTotal').innerText = total;
-  }
-});
 
 window.addEventListener('popstate', function (event) {
   const pageId = event.state && event.state.page ? event.state.page : 'customerPage';
@@ -2705,10 +2695,15 @@ async function trackOrder(){
 
   try {
     /* ================= SERVER TRACK ================= */
-    const resp = await apiCall(
-      { action: 'track_order', order_id: id },
-      { showLoading: true, loadingText: 'Checking order…' }
-    );
+   const resp = await apiCall(
+  {
+    action: 'track_order',
+    order_id: id,
+    email: currentUser.email   // ✅ YAHI ADD KARNA THA
+  },
+  { showLoading: true, loadingText: 'Checking order…' }
+);
+
 
     if(resp && resp.status === 'ok' && resp.order){
       const o = resp.order;
@@ -3010,7 +3005,7 @@ if(btn){
 }
 }
 
-  async function placeFinalOrder(
+async function placeFinalOrder(
   paymentMethod,
   paymentId = '',
   rpOrderId = '',
@@ -3018,8 +3013,8 @@ if(btn){
 ){
   showLoader('Placing order…');
 
-  // ✅ IMPORTANT: RAW cart total only
-  const rawTotal = calculateCartTotal();
+  // ✅ SEND FINAL PAYABLE TOTAL (NOT RAW)
+  const payableTotal = getPayableTotal(); // 🔥🔥🔥
 
   const res = await apiCall({
     action: 'order',
@@ -3029,13 +3024,11 @@ if(btn){
     address: window._selectedAddress,
     payment: paymentMethod,
 
-    // payment refs
     payment_id: paymentId,
     razorpay_order_id: rpOrderId,
     razorpay_signature: rpSignature,
 
-    // 🔥 VERY IMPORTANT
-    total: rawTotal,
+    total: payableTotal,          // ✅ FIX
     cart: JSON.stringify(cart),
     coupon_code: appliedCouponCode || ''
   });
@@ -3047,27 +3040,24 @@ if(btn){
     return;
   }
 
-  // ✅ SAVE LOCAL ORDER (display only)
+  // UI only
   const myOrders = loadMyOrders();
   myOrders.unshift({
     order_id: res.order_id,
     status: 'Placed',
     payment: paymentMethod,
-    total: res.payable || rawTotal, // backend truth
-    cart: cart,
+    total: payableTotal,
+    cart,
     timestamp: new Date().toLocaleString()
   });
   saveMyOrders(myOrders);
 
-  // ✅ CLEAR CART
   cart = [];
   saveCart();
   updateCounters();
 
-  // ✅ SUCCESS UI
   document.getElementById('successName').innerText =
     currentUser.name || 'Customer';
-
   document.getElementById('successOrderId').innerText =
     res.order_id;
 
