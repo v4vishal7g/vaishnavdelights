@@ -3490,7 +3490,13 @@ function applyCoupon(){
   }
 
   appliedCouponCode = code.toUpperCase();
-  msg.innerHTML = 'Coupon will be validated at checkout ✅';
+
+  msg.innerHTML = `
+    Coupon <strong>${appliedCouponCode}</strong> applied ✅<br>
+    <span class="small-muted">
+      Discount will be applied automatically at payment
+    </span>
+  `;
 }
   
   
