@@ -1895,6 +1895,9 @@ function updateAccountUI(){
 /* ------------------------- ORDERS PAGE / TRACKING ------------------------- */
 async function showMyOrdersList(){
 
+
+  console.log('showMyOrdersList called at', new Date().toLocaleTimeString());
+
   
   const container = document.getElementById('ordersListContainer');
   if(!container) return;
