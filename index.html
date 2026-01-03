@@ -1356,12 +1356,12 @@ body{
 
 <p style="margin-top:10px;font-size:13px;">
   Didn’t receive OTP?
-  <span
-    id="resendOtp"
-    style="color:#007bff;cursor:pointer;display:none;"
-  >
-    Resend OTP
-  </span>
+  <span id="resendOtp"
+      style="color:#007bff;cursor:pointer;display:none;">
+  Resend OTP
+</span>
+<span id="resendTimer"></span>
+
   <span id="resendTimer"></span>
 </p>
 
@@ -2299,44 +2299,38 @@ async function sendLoginOTP(){
 
   showToast('Code sent to email');
 
-  showModal(
-    'Enter code',
-    `A code was sent to ${email}. Enter it to login.`,
-    async function(code){
-      const ok = await verifyOtpOnServer(email, code, 'login');
-      if(!ok) return;
+ showModal(
+  'Enter code',
+  `A code was sent to ${email}. Enter it to login.`,
+  async function(code){
+    const ok = await verifyOtpOnServer(email, code, 'login');
+    if(!ok) return;
 
-      // 🔥 close modal FIRST (only once)
-      closeOtpModal();
+    closeOtpModal();
 
-      const role = user.role || 'customer';
-      const name = user.name || user.email.split('@')[0];
+    const role = user.role || 'customer';
+    const name = user.name || user.email.split('@')[0];
 
-      localStorage.setItem('email', user.email);
-      localStorage.setItem('role', role);
-      localStorage.setItem('name', name);
+    localStorage.setItem('email', user.email);
+    localStorage.setItem('role', role);
+    localStorage.setItem('name', name);
 
-      currentUser = {
-        email: user.email,
-        role,
-        name
-      };
+    currentUser = { email: user.email, role, name };
 
-      loadCart();
-      loadWish();
-      await loadAddressesFromServer();
+    loadCart();
+    loadWish();
+    await loadAddressesFromServer();
 
-      showToast('Logged in');
+    showToast('Logged in');
+    switchPage('customerPage');
+  }
+);
 
-      setTimeout(()=>{
-        switchPage('customerPage');
-      }, 50);
-    }
-  );
-
-  // 🔥 resend timer start AFTER modal opens
+// 🔥🔥🔥 IMPORTANT FIX
+setTimeout(() => {
   startOtpTimer(email, 'login');
-}
+}, 200);
+
 
 
 /* Verify OTP on server */
