@@ -3008,23 +3008,35 @@ if(btn){
   btn.innerText = method === 'cod' ? 'Pay on Delivery' : 'Pay Now';
 }
 }
-async function placeFinalOrder(paymentMethod, total, paymentId='', rpOrderId='', rpSignature=''){
 
+  async function placeFinalOrder(
+  paymentMethod,
+  paymentId = '',
+  rpOrderId = '',
+  rpSignature = ''
+){
   showLoader('Placing order…');
 
+  // ✅ IMPORTANT: RAW cart total only
+  const rawTotal = calculateCartTotal();
+
   const res = await apiCall({
-    action:'order',
+    action: 'order',
     email: currentUser.email,
     name: currentUser.name,
     phone: window._selectedPhone || '',
     address: window._selectedAddress,
     payment: paymentMethod,
+
+    // payment refs
     payment_id: paymentId,
     razorpay_order_id: rpOrderId,
     razorpay_signature: rpSignature,
-    total: total,
+
+    // 🔥 VERY IMPORTANT
+    total: rawTotal,
     cart: JSON.stringify(cart),
-    coupon_code: appliedCouponCode || ''  
+    coupon_code: appliedCouponCode || ''
   });
 
   hideLoader();
@@ -3034,13 +3046,13 @@ async function placeFinalOrder(paymentMethod, total, paymentId='', rpOrderId='',
     return;
   }
 
-  // ✅ SAVE ORDER LOCALLY (for Track / My Orders)
+  // ✅ SAVE LOCAL ORDER (display only)
   const myOrders = loadMyOrders();
   myOrders.unshift({
     order_id: res.order_id,
     status: 'Placed',
     payment: paymentMethod,
-    total: total,
+    total: res.payable || rawTotal, // backend truth
     cart: cart,
     timestamp: new Date().toLocaleString()
   });
@@ -3051,13 +3063,16 @@ async function placeFinalOrder(paymentMethod, total, paymentId='', rpOrderId='',
   saveCart();
   updateCounters();
 
-  // ✅ FILL SUCCESS PAGE DATA
-const sn = document.getElementById('successName');
-if(sn) sn.innerText = currentUser.name || 'Customer';
-  document.getElementById('successOrderId').innerText = res.order_id;
-  // ✅ GO TO SUCCESS PAGE
+  // ✅ SUCCESS UI
+  document.getElementById('successName').innerText =
+    currentUser.name || 'Customer';
+
+  document.getElementById('successOrderId').innerText =
+    res.order_id;
+
   switchPage('orderSuccessPage');
 }
+
 
   function renderSavedAddressUI(){
   const btn = document.getElementById('continuePayBtn');
@@ -3270,23 +3285,20 @@ async function startOnlinePayment(){
     switchPage('checkoutAddressPage');
     return;
   }
-  let total = getPayableTotal();
+  let total = calculateCartTotal(); // ✅ RAW CART TOTAL ONLY
+
 
 
   const payMethod =
     document.querySelector('input[name="pay"]:checked')?.value || 'upi';
 
-  // ✅ COD SAFE FLOW
-  if(payMethod === 'cod'){
-    placeFinalOrder('cod', total + 40);
-    return;
-  }
-
   // ONLINE PAYMENT
   const order = await apiCall({
-    action: 'create_razorpay_order',
-    total
-  });
+  action: 'create_razorpay_order',
+  total: calculateCartTotal(), // RAW ONLY
+  coupon_code: appliedCouponCode || ''
+});
+
 
   if(!order || order.status !== 'ok'){
     showToast('Payment init failed');
@@ -3300,14 +3312,14 @@ async function startOnlinePayment(){
     order_id: order.razorpay_order_id,
     name: "Vaishnav Delights",
     handler: function(res){
-      placeFinalOrder(
-        payMethod,
-        total,
-        res.razorpay_payment_id,
-        res.razorpay_order_id,
-        res.razorpay_signature
-      );
-    }
+  placeFinalOrder(
+    payMethod,
+    res.razorpay_payment_id,
+    res.razorpay_order_id,
+    res.razorpay_signature
+  );
+}
+
   });
 
   rzp.open();
@@ -3359,10 +3371,11 @@ function handlePaymentAction(){
     return;
   }
 
- let total = getPayableTotal();
+let total = calculateCartTotal(); // ✅ RAW CART TOTAL ONLY
 
 
-  placeFinalOrder('cod', total);
+
+placeFinalOrder('cod');
 }
 const ORDER_STEPS = [
   'Order Confirmed',
@@ -3475,7 +3488,7 @@ function renderEventsTimeline(events){
   /* ===== FIXED 10% COUPON ONLY ===== */
 let appliedCouponCode = '';
 
-async function applyCoupon(){
+function applyCoupon(){
   const input = document.getElementById('couponInput');
   const msg   = document.getElementById('couponMsg');
 
@@ -3485,10 +3498,9 @@ async function applyCoupon(){
     return;
   }
 
-  msg.innerText = 'Coupon will be validated at checkout ✅';
   appliedCouponCode = code.toUpperCase();
+  msg.innerHTML = 'Coupon will be validated at checkout ✅';
 }
-
   
   
 
