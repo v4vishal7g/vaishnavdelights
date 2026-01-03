@@ -1352,7 +1352,16 @@ body{
     <input id="otpInput" placeholder="6-digit code" style="margin-bottom:8px">
     <div style="display:flex;justify-content:flex-end;gap:8px">
       <button class="btn" onclick="verifyOtpFromModal()">Verify</button>
-      <button class="btn" style="background:#eee;color:#111" onclick="closeOtpModal()">Cancel</button>
+     <p style="margin-top:10px;font-size:13px;">
+  Didn’t receive OTP?
+  <span
+    id="resendOtp"
+    style="color:#007bff;cursor:pointer;display:none;"
+  >
+    Resend OTP
+  </span>
+  <span id="resendTimer"></span>
+</p>
     </div>
     <p id="otpErr" style="color:#e11d48;margin-top:8px"></p>
   </div>
@@ -1466,7 +1475,7 @@ body{
 
 <script>
 /* ------------------------- CONFIG ------------------------- */
-const API_URL = "https://script.google.com/macros/s/AKfycbzCCf0yaTiGpJSD5Z2S7G_dhS_y1UfLBfyBJfSG5N_l_SN2884N3mhavKGsgVxDCD1G/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxkQw1HSfCPQ0_AVz37yegHiTw2MwhgW12JH1kFkY42aj7EJ_WKAEcvYpokYMKMxGUD/exec";
 const RAZORPAY_KEY = "rzp_live_RukjWIITK7i5hU"; // TODO change to your Razorpay key
 
 
@@ -3536,6 +3545,46 @@ async function adminRejectReturn(orderId){
     showToast(res.message);
   }
 }
+
+  let resendInterval;
+let resendSeconds = 30;
+
+function startOtpTimer(email, purpose){
+  resendSeconds = 30;
+  document.getElementById('resendOtp').style.display = 'none';
+
+  resendInterval = setInterval(()=>{
+    resendSeconds--;
+    document.getElementById('resendTimer').innerText =
+      ` Resend in ${resendSeconds}s`;
+
+    if(resendSeconds <= 0){
+      clearInterval(resendInterval);
+      document.getElementById('resendTimer').innerText = '';
+      document.getElementById('resendOtp').style.display = 'inline';
+    }
+  },1000);
+
+  document.getElementById('resendOtp').onclick = async ()=>{
+    showLoader('Resending OTP…');
+
+    const res = await apiCall({
+      action:'send_otp_email',
+      email,
+      purpose
+    });
+
+    hideLoader();
+
+    if(res.status === 'ok'){
+      showToast('OTP resent');
+      startOtpTimer(email, purpose);
+    }else{
+      showToast(res.message || 'Unable to resend OTP');
+    }
+  };
+}
+
 
 </script>
 </body>
