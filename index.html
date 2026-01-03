@@ -2264,15 +2264,19 @@ async function loginWithPassword(){
 
 /* Send login OTP (server-side) */
 async function sendLoginOTP(){
-  const email = (document.getElementById('login_otp_email')||{}).value.trim().toLowerCase();
+  const emailEl = document.getElementById('login_otp_email');
+  const email = (emailEl?.value || '').trim().toLowerCase();
+
+  const msgEl = document.getElementById('log_msg');
+
   if(!email){
-    document.getElementById('log_msg').innerText='Enter email'; 
+    if(msgEl) msgEl.innerText = 'Enter email';
     return;
   }
 
   const user = await serverGetUser(email);
   if(!user){
-    document.getElementById('log_msg').innerText='No account found. Signup first.'; 
+    if(msgEl) msgEl.innerText = 'No account found. Signup first.';
     return;
   }
 
@@ -2286,29 +2290,49 @@ async function sendLoginOTP(){
   hideLoader();
 
   if(!d || d.status !== 'ok'){
-    showToast('Failed to send code');
+    showToast(d?.message || 'Failed to send code');
     return;
   }
 
   showToast('Code sent to email');
 
-  showModal('Enter code', `A code was sent to ${email}. Enter it to login.`, async function(code){
-    const ok = await verifyOtpOnServer(email, code, 'login');
-    if(!ok) return;
+  showModal(
+    'Enter code',
+    `A code was sent to ${email}. Enter it to login.`,
+    async function(code){
+      const ok = await verifyOtpOnServer(email, code, 'login');
+      if(!ok) return;
 
-    localStorage.setItem('email', user.email);
-    localStorage.setItem('role', user.role || 'customer');
-    localStorage.setItem('name', user.name || user.email.split('@')[0]);
+      // 🔥 close modal FIRST (only once)
+      closeOtpModal();
 
-    currentUser = { email: user.email, role:'customer', name: localStorage.getItem('name') };
+      const role = user.role || 'customer';
+      const name = user.name || user.email.split('@')[0];
 
-    loadCart();
-    loadWish();
-     await loadAddressesFromServer();
-    closeOtpModal();
-    showToast('Logged in');
-    switchPage('customerPage');
-  });
+      localStorage.setItem('email', user.email);
+      localStorage.setItem('role', role);
+      localStorage.setItem('name', name);
+
+      currentUser = {
+        email: user.email,
+        role,
+        name
+      };
+
+      loadCart();
+      loadWish();
+      await loadAddressesFromServer();
+
+      showToast('Logged in');
+
+      setTimeout(()=>{
+        switchPage('customerPage');
+      }, 50);
+    }
+  );
+
+  // 🔥 resend timer start AFTER modal opens
+  startOtpTimer(email, 'login');
 }
 
 
@@ -3546,41 +3570,49 @@ async function adminRejectReturn(orderId){
   }
 }
 
-  let resendInterval;
+  let resendInterval = null;
 let resendSeconds = 30;
 
 function startOtpTimer(email, purpose){
+  const resendBtn = document.getElementById('resendOtp');
+  const timerEl = document.getElementById('resendTimer');
+
+  if(!resendBtn || !timerEl) return;
+
   resendSeconds = 30;
-  document.getElementById('resendOtp').style.display = 'none';
+  resendBtn.style.display = 'none';
+  timerEl.innerText = ` Resend in ${resendSeconds}s`;
+
+  if(resendInterval) clearInterval(resendInterval);
 
   resendInterval = setInterval(()=>{
     resendSeconds--;
-    document.getElementById('resendTimer').innerText =
-      ` Resend in ${resendSeconds}s`;
+    timerEl.innerText = ` Resend in ${resendSeconds}s`;
 
     if(resendSeconds <= 0){
       clearInterval(resendInterval);
-      document.getElementById('resendTimer').innerText = '';
-      document.getElementById('resendOtp').style.display = 'inline';
+      timerEl.innerText = '';
+      resendBtn.style.display = 'inline';
     }
   },1000);
 
-  document.getElementById('resendOtp').onclick = async ()=>{
-    showLoader('Resending OTP…');
+  // 🔁 RESEND CLICK
+  resendBtn.onclick = async ()=>{
+    resendBtn.style.display = 'none';
+    timerEl.innerText = ' Sending OTP…';
 
     const res = await apiCall({
-      action:'send_otp_email',
+      action: 'send_otp_email',
       email,
       purpose
     });
 
-    hideLoader();
-
     if(res.status === 'ok'){
       showToast('OTP resent');
-      startOtpTimer(email, purpose);
+      startOtpTimer(email, purpose); // 🔁 restart timer
     }else{
       showToast(res.message || 'Unable to resend OTP');
+      timerEl.innerText = '';
     }
   };
 }
