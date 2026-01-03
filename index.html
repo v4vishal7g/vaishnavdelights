@@ -2085,7 +2085,19 @@ const canCancel =
 
 
   
-function renderOrdersPage(){ showMyOrdersList(); }
+async function renderOrdersPage(){
+  const res = await apiCall({
+    action:'list_orders_by_email',
+    email: normalizeEmail(currentUser.email)
+  }, { showLoading:true, loadingText:'Loading orders…' });
+
+  if(res && res.status === 'ok'){
+    showMyOrdersList(res);
+  } else {
+    showToast('Unable to load orders');
+  }
+}
+
 
 async function cancelOrderFromSite(orderId){
   if(!confirm('Are you sure you want to cancel this order?')) return;
@@ -2100,9 +2112,10 @@ email: normalizeEmail(currentUser.email)
     return;
   }
   showToast('Order cancelled.');
-  setTimeout(() => {
-  showMyOrdersList();
+ setTimeout(() => {
+  renderOrdersPage();
 }, 300);
+
 }
 
 /* ------------------------- AUTH (SERVER-BACKED) ------------------------- */
