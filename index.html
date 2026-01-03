@@ -1477,7 +1477,7 @@ body{
 
 <script>
 /* ------------------------- CONFIG ------------------------- */
-const API_URL = "https://script.google.com/macros/s/AKfycbwPeK-IhRyA04pT2OeVEXpfWkrJi5Ysf5drQe3FDTQJeAmNZyN_XS4m48FAFjOSJmAu/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycby9KQi91rnxDpPyI_KuPG9xMXUCmu2mzDMFTjozlU-rR_fkgUonxW-N_efaow4gTboj/exec";
 const RAZORPAY_KEY = "rzp_live_RukjWIITK7i5hU"; // TODO change to your Razorpay key
 
 
@@ -3028,6 +3028,7 @@ async function placeFinalOrder(paymentMethod, total, paymentId='', rpOrderId='',
     razorpay_signature: rpSignature,
     total: total,
     cart: JSON.stringify(cart)
+    coupon_code: appliedCouponCode || ''  
   });
 
   hideLoader();
