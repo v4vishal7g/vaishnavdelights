@@ -772,9 +772,9 @@ body{
 .timeline-step::before{
   content:'';
   position:absolute;
-  left:7px;          /* dot center */
-  top:7px;           /* dot center se start */
-  height:100%;
+  left:6px;
+  top:-24px;
+  height:24px;
   width:2px;
   background:#ddd;
 }
@@ -839,6 +839,9 @@ body{
 .timeline-step.current .dot{
   background:#2563eb;
   box-shadow:0 0 0 4px rgba(37,99,235,.15);
+}
+  .timeline-step.done + .timeline-step::before{
+  background:#16a34a;
 }
 
 .timeline-step.current strong{
@@ -3477,22 +3480,15 @@ async function loadAddressesFromServer(){
 function renderEventsTimeline(events){
   const box = document.getElementById('orderTimeline');
   if(!box) return;
-
   box.style.display = 'block';
-
   const doneTitles = events.map(e => e.title);
-
   box.innerHTML = STATUS_FLOW.map((step, index) => {
-
     const doneIndex = doneTitles.indexOf(step);
-
     const isDone = doneIndex !== -1;
     const isCurrent = doneIndex === doneTitles.length - 1;
-
-    const time = isDone
+    const time = (isDone && events[doneIndex]?.timestamp)
       ? new Date(events[doneIndex].timestamp).toLocaleString()
       : '';
-
     return `
       <div class="timeline-step
         ${isDone ? 'done' : ''}
