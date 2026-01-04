@@ -1866,7 +1866,22 @@ function openAccount(){
 function cartKey(){ return `cart_${currentUser.email||'guest'}`; }
 function ordersKey(){ return `myorders_${currentUser.email||'guest'}`; }
 function saveCart(){ try{ localStorage.setItem(cartKey(), JSON.stringify(cart)); }catch(e){} }
-function loadCart(){ try{ const d=localStorage.getItem(cartKey()); cart = d?JSON.parse(d):[] }catch(e){cart=[]} updateCounters(); }
+function loadCart(){
+  try{
+    let d = localStorage.getItem(cartKey());
+
+    // 🔥 guest → user fallback
+    if(!d && currentUser.email !== 'guest'){
+      d = localStorage.getItem('cart_guest');
+    }
+
+    cart = d ? JSON.parse(d) : [];
+  }catch(e){
+    cart = [];
+  }
+  updateCounters();
+}
+
 function saveMyOrders(orders){ try{ localStorage.setItem(ordersKey(), JSON.stringify(orders)); }catch(e){} }
 function loadMyOrders(){ try{ const d=localStorage.getItem(ordersKey()); return d?JSON.parse(d):[] }catch(e){return []} }
 function saveWish(){ try{ localStorage.setItem('wish_'+(currentUser.email||'guest'), JSON.stringify(wishlist)); }catch(e){} }
@@ -2623,26 +2638,35 @@ async function loadSession(){
   showLoader('Preparing app…');
 
   try{
+    // 🔥 1️⃣ USER PEHLE SET KARO
     const email = localStorage.getItem('email');
     const role  = localStorage.getItem('role');
     const name  = localStorage.getItem('name');
 
     if(email && role){
-      currentUser = { email, role, name: name || email.split('@')[0] };
-    } else {
-      currentUser = { email:'guest', role:'guest', name:'Guest' };
+      currentUser = {
+        email,
+        role,
+        name: name || email.split('@')[0]
+      };
+    }else{
+      currentUser = {
+        email:'guest',
+        role:'guest',
+        name:'Guest'
+      };
     }
 
+    // 🔥 2️⃣ AB CART LOAD KARO
     loadCart();
     loadWish();
     updateAccountUI();
-      renderProducts(); 
+    renderProducts();
 
-    // ✅ ADD THIS (initial page restore)
+    // 🔥 3️⃣ PAGE RESTORE
     const page = getPageFromURL();
     switchPage(page, true);
 
-    // ✅ back / forward support
     window.addEventListener('popstate', () => {
       const p = getPageFromURL();
       switchPage(p, true);
@@ -3469,24 +3493,22 @@ function renderEventsTimeline(events){
 
   box.style.display = 'block';
 
-  // Normalize events
   const doneTitles = events.map(e => e.title);
 
   box.innerHTML = STATUS_FLOW.map((step, i) => {
 
-    const doneIndex = doneTitles.indexOf(step);
-    const isDone = doneIndex !== -1;
-    const isActive =
-      isDone && doneIndex === doneTitles.length - 1;
+    const idx = doneTitles.indexOf(step);
+    const isDone = idx !== -1;
+    const isCurrent = isDone && idx === doneTitles.length - 1;
 
     const time = isDone
-      ? new Date(events[doneIndex].timestamp).toLocaleString()
+      ? new Date(events[idx].timestamp).toLocaleString()
       : '';
 
     return `
       <div class="timeline-step
         ${isDone ? 'active' : ''}
-        ${isActive ? 'current' : ''}">
+        ${isCurrent ? 'current' : ''}">
         <span class="dot"></span>
         <div class="content">
           <strong>${step}</strong>
