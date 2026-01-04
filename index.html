@@ -768,32 +768,38 @@ body{
 .timeline-step:last-child{
   padding-bottom:0;
 }
-
-.timeline-step::before{
-  content:'';
-  position:absolute;
-  left:6px;
-  top:-24px;
-  height:24px;
-  width:2px;
-  background:#ddd;
+.timeline-step:last-child::before {
+  display: none;
+}
+.timeline-step::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 18px;
+  width: 2px;
+  height: 100%;
+  background: #e5e5e5;
 }
 
 .timeline-step:first-child::before{
   display:none;
 }
 
-.timeline-step .dot{
-  width:14px;
-  height:14px;
-  border-radius:50%;
-  background:#ccc;
-  margin-top:0;
-  position:relative;
-  z-index:2;
+.timeline-step .dot {
+  position: absolute;
+  left: 0;
+  top: 6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ccc;
 }
 
-
+.timeline-step {
+  position: relative;
+  padding-left: 28px;
+  margin-bottom: 20px;
+}
 
 
 
@@ -849,11 +855,12 @@ body{
 }
 
 /* DONE STEPS (GREEN) */
-.timeline-step.done .dot{
-  background:#16a34a;
+.timeline-step.done .dot {
+  background: #2f80ed;
 }
-.timeline-step.done::before{
-  background:#16a34a;
+
+.timeline-step.done::before {
+  background: #2f80ed;
 }
 /* CURRENT STEP (BLUE) */
 .timeline-step.current .dot{
@@ -1463,7 +1470,6 @@ const STATUS_FLOW = [
   'Out for Delivery',
   'Delivered'
 ];
-
 
 
 function addressKey(){
@@ -3476,24 +3482,27 @@ async function loadAddressesFromServer(){
     console.error('loadAddressesFromServer error', err);
   }
 }
-
 function renderEventsTimeline(events){
   const box = document.getElementById('orderTimeline');
   if(!box) return;
+
   box.style.display = 'block';
+
+  // titles in correct order
   const doneTitles = events.map(e => e.title);
-  box.innerHTML = STATUS_FLOW.map((step, index) => {
-    const doneIndex = doneTitles.indexOf(step);
-    const isDone = doneIndex !== -1;
-    const isCurrent = doneIndex === doneTitles.length - 1;
-    const time = (isDone && events[doneIndex]?.timestamp)
-      ? new Date(events[doneIndex].timestamp).toLocaleString()
-      : '';
+
+  box.innerHTML = STATUS_FLOW.map((step) => {
+    const idx = doneTitles.indexOf(step);
+    const isDone = idx !== -1;
+    const isCurrent = idx === doneTitles.length - 1;
+
+    let time = '';
+    if(isDone && events[idx]?.timestamp){
+      time = new Date(events[idx].timestamp).toLocaleString();
+    }
+
     return `
-      <div class="timeline-step
-        ${isDone ? 'done' : ''}
-        ${isCurrent ? 'current' : ''}
-      ">
+      <div class="timeline-step ${isDone ? 'done' : ''} ${isCurrent ? 'current' : ''}">
         <span class="dot"></span>
         <div class="content">
           <strong>${step}</strong>
@@ -3503,6 +3512,7 @@ function renderEventsTimeline(events){
     `;
   }).join('');
 }
+
   /* ===== FIXED 10% COUPON ONLY ===== */
 let appliedCouponCode = '';
 let appliedDiscount = 0;
