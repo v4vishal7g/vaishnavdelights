@@ -3230,7 +3230,7 @@ window.addEventListener('popstate', function () {
     cancelAddAddress();
 
     // browser ko page change se roko
-    history.pushState({ page: 'checkoutAddressPage' }, '', location.pathname);
+history.pushState({ page:id }, '', `#${id}`);
   }
 });
 
@@ -3310,7 +3310,7 @@ async function startOnlinePayment(){
 
   const rzp = new Razorpay({
     key: RAZORPAY_KEY,
-    amount: total * 100,
+    amount: getPayableTotal() * 100,
     currency: "INR",
     order_id: order.razorpay_order_id,
     name: "Vaishnav Delights",
@@ -3391,16 +3391,14 @@ const ORDER_STEPS = [
 function renderStatusTimeline(currentStatus){
   const index = ORDER_STEPS.indexOf(currentStatus);
 
-  document.querySelectorAll('.timeline .step')
+document.querySelectorAll('.timeline-step')
     .forEach((el,i)=>{
       el.classList.remove('done','active');
       if(i < index) el.classList.add('done');
       if(i === index) el.classList.add('active');
     });
 }
-  function renderTimeline(currentStatus){
-  renderStatusTimeline(currentStatus);
-}
+  
 
 
 function loadOrderTimeline(orderId, currentStatus){
@@ -3416,7 +3414,7 @@ function loadOrderTimeline(orderId, currentStatus){
   })
   .then(r=>r.json())
   .then(res=>{
-    const box = document.getElementById('events');
+const box = document.getElementById('orderTimeline');
     box.innerHTML='';
 
     res.events.forEach(e=>{
@@ -3531,16 +3529,6 @@ async function applyCoupon(){
   `;
 
   updateFinalTotal();
-}
-
-  
-
-
-
-
-function updateFinalTotal(){
-  document.getElementById('finalTotal').innerText =
-    getPayableTotal();
 }
 
 
