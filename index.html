@@ -807,7 +807,7 @@ body{
   display:flex;
   gap:12px;
   position:relative;
-  padding:0 0 24px 0;
+  padding:0 0 28px 0;
 }
 
 .timeline-step:last-child{
@@ -818,8 +818,8 @@ body{
   content:'';
   position:absolute;
   left:6px;
-  top:-24px;          /* 🔥 IMPORTANT: connect to previous */
-  height:100%;
+  top:-18px;              /* ⬅️ upar wale dot se connect */
+  height:calc(100% + 18px); /* ⬅️ neeche tak full */
   width:2px;
   background:#ddd;
 }
