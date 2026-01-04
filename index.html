@@ -3055,7 +3055,20 @@ function updateFinalTotal(){
     getPayableTotal();
 }
 
+function getFinalPayAmount(){
+  let total = calculateCartTotal();
 
+  total -= appliedDiscount || 0;
+
+  const pay =
+    document.querySelector('input[name="pay"]:checked')?.value;
+
+  if(pay === 'cod'){
+    total += 40;
+  }
+
+  return total < 0 ? 0 : Math.round(total);
+}
 
   
 function selectPay(method){
@@ -3334,45 +3347,39 @@ async function startOnlinePayment(){
     switchPage('checkoutAddressPage');
     return;
   }
-  let total = calculateCartTotal(); // ✅ RAW CART TOTAL ONLY
 
+  const finalAmount = getFinalPayAmount();
 
-
-  const payMethod =
-    document.querySelector('input[name="pay"]:checked')?.value || 'upi';
-
-  // ONLINE PAYMENT
   const order = await apiCall({
-  action: 'create_razorpay_order',
-  total: calculateCartTotal(), // RAW ONLY
-  coupon_code: appliedCouponCode || ''
-});
-
+    action: 'create_razorpay_order',
+    total: finalAmount,
+    coupon_code: appliedCouponCode || ''
+  });
 
   if(!order || order.status !== 'ok'){
-    showToast('Payment init failed');
+    showToast(order?.message || 'Payment initiation failed');
     return;
   }
 
   const rzp = new Razorpay({
     key: RAZORPAY_KEY,
-    amount: getPayableTotal() * 100,
+    amount: finalAmount * 100,
     currency: "INR",
     order_id: order.razorpay_order_id,
     name: "Vaishnav Delights",
     handler: function(res){
-  placeFinalOrder(
-    payMethod,
-    res.razorpay_payment_id,
-    res.razorpay_order_id,
-    res.razorpay_signature
-  );
-}
-
+      placeFinalOrder(
+        'online',
+        res.razorpay_payment_id,
+        res.razorpay_order_id,
+        res.razorpay_signature
+      );
+    }
   });
 
   rzp.open();
 }
+
 
   document.addEventListener('DOMContentLoaded', () => {
 
@@ -3425,6 +3432,7 @@ let total = calculateCartTotal(); // ✅ RAW CART TOTAL ONLY
 
 
 placeFinalOrder('cod');
+
 }
 const ORDER_STEPS = [
   'Order Confirmed',
