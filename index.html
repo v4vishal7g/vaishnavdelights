@@ -2894,7 +2894,6 @@ async function markDelivered(orderId){
 
 function goCheckout(){
 
-  // 🔒 LOGIN REQUIRED
   if(!currentUser || !currentUser.email || currentUser.email === 'guest'){
     showToast('Please login to continue');
     switchPage('loginPage');
@@ -2906,9 +2905,15 @@ function goCheckout(){
     return;
   }
 
-  renderSavedAddressUI();
+  // ✅ FIRST SHOW PAGE
   switchPage('checkoutAddressPage');
+
+  // ✅ THEN RENDER (DOM EXISTS NOW)
+  setTimeout(() => {
+    renderSavedAddressUI();
+  }, 0);
 }
+
 
 
 async function saveAddressAndContinue(){
