@@ -2975,14 +2975,23 @@ function calculateCartTotal(){
 function getPayableTotal(){
   let total = calculateCartTotal();
 
+  total -= appliedDiscount;
+
   const pay =
     document.querySelector('input[name="pay"]:checked')?.value;
 
   if(pay === 'cod'){
     total += 40;
   }
-  return total;
+
+  return total < 0 ? 0 : total;
 }
+
+function updateFinalTotal(){
+  document.getElementById('finalTotal').innerText =
+    getPayableTotal();
+}
+
 
 
   
@@ -3013,9 +3022,6 @@ async function placeFinalOrder(
 ){
   showLoader('Placing order…');
 
-  // ✅ SEND FINAL PAYABLE TOTAL (NOT RAW)
-  const payableTotal = getPayableTotal(); // 🔥🔥🔥
-
   const res = await apiCall({
     action: 'order',
     email: currentUser.email,
@@ -3028,7 +3034,8 @@ async function placeFinalOrder(
     razorpay_order_id: rpOrderId,
     razorpay_signature: rpSignature,
 
-    total: payableTotal,          // ✅ FIX
+    // 🔥 FIXED
+    total: getPayableTotal(),
     cart: JSON.stringify(cart),
     coupon_code: appliedCouponCode || ''
   });
@@ -3040,14 +3047,13 @@ async function placeFinalOrder(
     return;
   }
 
-  // UI only
   const myOrders = loadMyOrders();
   myOrders.unshift({
     order_id: res.order_id,
     status: 'Placed',
     payment: paymentMethod,
-    total: payableTotal,
-    cart,
+    total: getPayableTotal(),
+    cart: cart,
     timestamp: new Date().toLocaleString()
   });
   saveMyOrders(myOrders);
@@ -3058,11 +3064,13 @@ async function placeFinalOrder(
 
   document.getElementById('successName').innerText =
     currentUser.name || 'Customer';
+
   document.getElementById('successOrderId').innerText =
     res.order_id;
 
   switchPage('orderSuccessPage');
 }
+
 
 
   function renderSavedAddressUI(){
@@ -3478,8 +3486,9 @@ function renderEventsTimeline(events){
 
   /* ===== FIXED 10% COUPON ONLY ===== */
 let appliedCouponCode = '';
+let appliedDiscount = 0;
 
-function applyCoupon(){
+async function applyCoupon(){
   const input = document.getElementById('couponInput');
   const msg   = document.getElementById('couponMsg');
 
@@ -3489,16 +3498,37 @@ function applyCoupon(){
     return;
   }
 
-  appliedCouponCode = code.toUpperCase();
+  const cartTotal = calculateCartTotal();
+  
+
+  msg.innerText = 'Checking coupon…';
+
+  const res = await apiCall({
+    action: 'validate_coupon',   // 🔥 new action
+    code: code,
+    cart_total: cartTotal
+  });
+
+  if(res.status !== 'ok'){
+    appliedCouponCode = '';
+    appliedDiscount = 0;
+    updateFinalTotal();
+    msg.innerText = res.message;
+    return;
+  }
+
+  // ✅ SUCCESS
+  appliedCouponCode = res.code;
+  appliedDiscount   = res.discount;
 
   msg.innerHTML = `
-    Coupon <strong>${appliedCouponCode}</strong> applied ✅<br>
-    <span class="small-muted">
-      Discount will be applied automatically at payment
-    </span>
+    Coupon <strong>${res.code}</strong> applied ✅<br>
+    <span class="small-muted">You saved ₹${res.discount}</span>
   `;
+
+  updateFinalTotal();
 }
-  
+
   
 
 
