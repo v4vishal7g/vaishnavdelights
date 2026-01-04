@@ -837,13 +837,9 @@ body{
   flex-shrink:0;
 }
 
-.timeline-step.active .dot{
-  background:#28a745;
-}
 
-.timeline-step.active::before{
-  background:#28a745;
-}
+
+
 
 .timeline-step .content strong{
   font-size:14px;
@@ -893,9 +889,30 @@ body{
   color:#2563eb;
 }
 
-.timeline-step:not(.active){
+/* DONE STEPS (GREEN) */
+.timeline-step.done .dot{
+  background:#16a34a;
+}
+
+.timeline-step.done::before{
+  background:#16a34a;
+}
+
+/* CURRENT STEP (BLUE) */
+.timeline-step.current .dot{
+  background:#2563eb;
+  box-shadow:0 0 0 4px rgba(37,99,235,.15);
+}
+
+.timeline-step.current strong{
+  color:#2563eb;
+}
+
+/* FUTURE STEPS ONLY FADE */
+.timeline-step:not(.done):not(.current){
   opacity:.45;
 }
+
 
 </style>
 </head>
