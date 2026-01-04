@@ -1754,62 +1754,42 @@ function hideAllPages(){ document.querySelectorAll('.page').forEach(p=>p.classLi
 function scrollToSection(id){ setTimeout(()=>{ document.getElementById(id)?.scrollIntoView({behavior:'smooth'}); },120); }
 
 function switchPage(id, fromPopstate = false){
-  // 🔒 fallback
   if(!id) id = 'customerPage';
 
-  // 1️⃣ Hide all pages
   document.querySelectorAll('.page')
     .forEach(p => p.classList.remove('show'));
 
-  // 2️⃣ Show target page
   const el = document.getElementById(id);
   if(el) el.classList.add('show');
 
-  // 3️⃣ Page title
   const titles = {
-    customerPage: "Vaishnav Delights — Buy Pure & Authentic Thekua Online in India",
-    cartPage: "Your Shopping Cart — Vaishnav Delights",
-    checkoutAddressPage: "Checkout — Address",
-    checkoutPaymentPage: "Checkout — Payment",
-    trackPage: "Track Order — Vaishnav Delights",
-    ordersPage: "My Orders — Vaishnav Delights",
-    loginPage: "Login — Vaishnav Delights",
-    signupPage: "Signup — Vaishnav Delights",
-    forgotPage: "Forgot Password — Vaishnav Delights",
-    accountPage: "My Account — Vaishnav Delights",
-    adminPage: "Admin — Vaishnav Delights",
-    orderSuccessPage: "Order Placed — Vaishnav Delights"
+    customerPage: "Vaishnav Delights",
+    cartPage: "Cart",
+    checkoutAddressPage: "Checkout",
+    checkoutPaymentPage: "Payment",
+    ordersPage: "My Orders",
+    trackPage: "Track Order",
+    loginPage: "Login",
+    signupPage: "Signup",
+    adminPage: "Admin"
   };
   document.title = titles[id] || titles.customerPage;
 
-  // 4️⃣ Footer control
-  const footer = document.getElementById('mainFooter');
-  if(footer){
-    footer.style.display =
-      (id === 'loginPage' || id === 'signupPage' || id === 'forgotPage')
-        ? 'none'
-        : 'block';
-  }
-
-  // 5️⃣ Page-specific renders
-  if(id === 'customerPage') renderProducts();
-  if(id === 'cartPage') renderCart();
-  if(id === 'adminPage') renderAdminOrders();
-  if(id === 'ordersPage') renderOrdersPage();
-
-  // 6️⃣ Update UI
-  updateAccountUI();
-  closeMenu?.();
-
-  // 7️⃣ 🔥 URL + HISTORY (MOST IMPORTANT)
   if(!fromPopstate){
     history.pushState(
       { page: id },
       '',
-      `#${id}`
+      `#${id}`       // 🔥 HASH IS MUST
     );
   }
 }
+window.addEventListener('popstate', function(){
+  const page = getPageFromURL();
+  switchPage(page, true);
+});
+
+/* 4️⃣ loadSession LAST */
+loadSession();
 
 
 function toggleMenu(){
@@ -2620,12 +2600,17 @@ async function renderAdminOrders(){
 }
 
 /* ------------------------- SESSION INIT ------------------------- */
+function getPageFromURL(){
+  return window.location.hash.replace('#','') || 'customerPage';
+}
+
 async function loadSession(){
   showLoader('Preparing app…');
+
   try{
     const email = localStorage.getItem('email');
-    const role = localStorage.getItem('role');
-    const name = localStorage.getItem('name');
+    const role  = localStorage.getItem('role');
+    const name  = localStorage.getItem('name');
 
     if(email && role){
       currentUser = { email, role, name: name || email.split('@')[0] };
@@ -2635,21 +2620,19 @@ async function loadSession(){
 
     loadCart();
     loadWish();
-    renderProducts();
-    renderCart();
     updateAccountUI();
 
-    // 🔥🔥🔥 YAHI MAIN FIX 🔥🔥🔥
-    const initialPage = getPageFromURL();
-    switchPage(initialPage, true);
+    // 🔥🔥🔥 THIS IS THE FIX
+    const page = getPageFromURL();
+    switchPage(page, true);
 
   }catch(e){
-    console.error('loadSession err', e);
-  } finally {
+    console.error('loadSession error', e);
+  }finally{
     hideLoader();
   }
 }
-loadSession();
+
 
 /* ------------------------- SLIDER & LOGOUT ------------------------- */
 let slide=0;
