@@ -3503,20 +3503,19 @@ async function loadAddressesFromServer(){
   }
 }
 
-  function renderEventsTimeline(events){
+function renderEventsTimeline(events){
   const box = document.getElementById('orderTimeline');
   if(!box) return;
 
   box.style.display = 'block';
 
-  // completed steps titles
   const doneTitles = events.map(e => e.title);
 
   box.innerHTML = STATUS_FLOW.map((step, index) => {
 
     const doneIndex = doneTitles.indexOf(step);
 
-    const isDone    = doneIndex !== -1;
+    const isDone = doneIndex !== -1;
     const isCurrent = doneIndex === doneTitles.length - 1;
 
     const time = isDone
@@ -3525,7 +3524,7 @@ async function loadAddressesFromServer(){
 
     return `
       <div class="timeline-step
-        ${isDone ? 'active' : ''}
+        ${isDone ? 'done' : ''}
         ${isCurrent ? 'current' : ''}
       ">
         <span class="dot"></span>
@@ -3537,7 +3536,6 @@ async function loadAddressesFromServer(){
     `;
   }).join('');
 }
-
   /* ===== FIXED 10% COUPON ONLY ===== */
 let appliedCouponCode = '';
 let appliedDiscount = 0;
