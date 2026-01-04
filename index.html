@@ -3503,31 +3503,31 @@ async function loadAddressesFromServer(){
   }
 }
 
-
-
-
-function renderEventsTimeline(events){
+  function renderEventsTimeline(events){
   const box = document.getElementById('orderTimeline');
   if(!box) return;
 
   box.style.display = 'block';
 
+  // completed steps titles
   const doneTitles = events.map(e => e.title);
 
-  box.innerHTML = STATUS_FLOW.map((step) => {
+  box.innerHTML = STATUS_FLOW.map((step, index) => {
 
-    const idx = doneTitles.indexOf(step);
-    const isDone = idx !== -1;
-    const isCurrent = idx === doneTitles.length - 1;
+    const doneIndex = doneTitles.indexOf(step);
+
+    const isDone    = doneIndex !== -1;
+    const isCurrent = doneIndex === doneTitles.length - 1;
 
     const time = isDone
-      ? new Date(events[idx].timestamp).toLocaleString()
+      ? new Date(events[doneIndex].timestamp).toLocaleString()
       : '';
 
     return `
       <div class="timeline-step
-        ${isDone ? 'done' : ''}
-        ${isCurrent ? 'current' : ''}">
+        ${isDone ? 'active' : ''}
+        ${isCurrent ? 'current' : ''}
+      ">
         <span class="dot"></span>
         <div class="content">
           <strong>${step}</strong>
@@ -3537,7 +3537,6 @@ function renderEventsTimeline(events){
     `;
   }).join('');
 }
-
 
   /* ===== FIXED 10% COUPON ONLY ===== */
 let appliedCouponCode = '';
