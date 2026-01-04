@@ -943,7 +943,7 @@ body{
   </div>
 </header>
 
-<div id="customerPage" class="page show">
+<div id="customerPage" class="page">
   <div class="container" id="home" style="margin-top:18px">
     <div class="slider" id="slider">
       <img src="thekua1.jpg" class="active" alt="Premium Thekua">
@@ -1783,13 +1783,8 @@ function switchPage(id, fromPopstate = false){
     );
   }
 }
-window.addEventListener('popstate', function(){
-  const page = getPageFromURL();
-  switchPage(page, true);
-});
 
-/* 4️⃣ loadSession LAST */
-loadSession();
+
 
 
 function toggleMenu(){
@@ -1811,10 +1806,6 @@ function closeMenu(){
 }
 
 
-window.addEventListener('popstate', function (event) {
-  const pageId = event.state && event.state.page ? event.state.page : 'customerPage';
-  switchPage(pageId, true);
-});
 
 /* ------------------------- MENU VISIBILITY ------------------------- */
 function updateMenuItems(){
@@ -2623,8 +2614,11 @@ async function loadSession(){
     updateAccountUI();
 
     // 🔥🔥🔥 THIS IS THE FIX
-    const page = getPageFromURL();
-    switchPage(page, true);
+   window.addEventListener('popstate', () => {
+  const page = getPageFromURL();
+  switchPage(page, true);
+});
+
 
   }catch(e){
     console.error('loadSession error', e);
@@ -2632,7 +2626,7 @@ async function loadSession(){
     hideLoader();
   }
 }
-
+loadSession();
 
 /* ------------------------- SLIDER & LOGOUT ------------------------- */
 let slide=0;
@@ -3076,8 +3070,7 @@ async function placeFinalOrder(
 }
 
 
-
-  function renderSavedAddressUI(){
+ function renderSavedAddressUI(){
   const btn = document.getElementById('continuePayBtn');
   if(btn) btn.style.display = 'none';
 
@@ -3130,6 +3123,7 @@ async function placeFinalOrder(
     }
   }, 0);
 }
+ 
 
 
   
