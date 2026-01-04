@@ -807,7 +807,7 @@ body{
   display:flex;
   gap:12px;
   position:relative;
-  padding-bottom:20px;
+  padding:0 0 24px 0;
 }
 
 .timeline-step:last-child{
@@ -818,13 +818,13 @@ body{
   content:'';
   position:absolute;
   left:6px;
-  top:18px;
-  bottom:0;
+  top:-24px;          /* 🔥 IMPORTANT: connect to previous */
+  height:100%;
   width:2px;
   background:#ddd;
 }
 
-.timeline-step:last-child::before{
+.timeline-step:first-child::before{
   display:none;
 }
 
@@ -893,11 +893,9 @@ body{
 .timeline-step.done .dot{
   background:#16a34a;
 }
-
 .timeline-step.done::before{
   background:#16a34a;
 }
-
 /* CURRENT STEP (BLUE) */
 .timeline-step.current .dot{
   background:#2563eb;
