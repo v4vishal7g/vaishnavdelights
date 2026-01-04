@@ -2183,8 +2183,10 @@ async function signupWithOTP(){
 
         currentUser = { email, role:'customer', name };
 
+        mergeGuestCartIntoUser();
         loadCart();
         await loadAddressesFromServer();
+        updateAccountUI();  
         closeOtpModal();
 
         showToast('Signup successful');
@@ -2244,7 +2246,8 @@ async function loginWithPassword(){
       role: user.role || 'customer',
       name: user.name || user.email.split('@')[0]
     };
-
+    mergeGuestCartIntoUser();
+    updateAccountUI();  
     loadCart();
     loadWish();
 
@@ -2313,7 +2316,8 @@ async function sendLoginOTP(){
       localStorage.setItem('name', name);
 
       currentUser = { email: user.email, role, name };
-
+      mergeGuestCartIntoUser();
+      updateAccountUI();  
       loadCart();
       loadWish();
       await loadAddressesFromServer();
@@ -2761,9 +2765,6 @@ renderStatusTimeline(o.status || 'Placed');
           </div>
         </div>
       `;
-
-    
-      loadOrderTimeline(o.order_id, o.status || 'Placed');
 
       return;
     }
@@ -3239,19 +3240,6 @@ function deleteAddress(i){
   renderSavedAddressUI();
 }
 
-window.addEventListener('popstate', function () {
-
-  const form = document.getElementById('addressForm');
-
-  // agar address form open hai
-  if(form && form.style.display === 'block'){
-    cancelAddAddress();
-
-    // browser ko page change se roko
-history.pushState({ page:id }, '', `#${id}`);
-  }
-});
-
 async function fetchCityStateFromPincode(pincode){
 
   if(!/^[1-9][0-9]{5}$/.test(pincode)){
@@ -3646,6 +3634,33 @@ function startOtpTimer(email, purpose){
       timerEl.innerText = '';
     }
   };
+}
+function mergeGuestCartIntoUser(){
+  const guestKey = 'cart_guest';
+  const userKey = cartKey();
+
+  if(guestKey === userKey) return;
+
+  const guestCart = JSON.parse(localStorage.getItem(guestKey) || '[]');
+  if(!guestCart.length) return;
+
+  const userCart = JSON.parse(localStorage.getItem(userKey) || '[]');
+
+  guestCart.forEach(gc=>{
+    const found = userCart.find(
+      uc => uc.id === gc.id && uc.variant === gc.variant
+    );
+    if(found){
+      found.q += gc.q;
+    }else{
+      userCart.push(gc);
+    }
+  });
+
+  localStorage.setItem(userKey, JSON.stringify(userCart));
+  localStorage.removeItem(guestKey);
+
+  cart = userCart;
 }
 
 
