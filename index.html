@@ -1863,24 +1863,32 @@ function openAccount(){
 }
 
 /* ------------------------- STORAGE ------------------------- */
-function cartKey(){ return `cart_${currentUser.email||'guest'}`; }
+function cartKey(){
+  return currentUser && currentUser.email && currentUser.email !== 'guest'
+    ? `cart_${currentUser.email}`
+    : 'cart_guest';
+}
+
 function ordersKey(){ return `myorders_${currentUser.email||'guest'}`; }
-function saveCart(){ try{ localStorage.setItem(cartKey(), JSON.stringify(cart)); }catch(e){} }
+function saveCart(){
+  try{
+    localStorage.setItem(cartKey(), JSON.stringify(cart));
+  }catch(e){
+    console.error('saveCart error', e);
+  }
+}
+
 function loadCart(){
   try{
-    let d = localStorage.getItem(cartKey());
-
-    // 🔥 guest → user fallback
-    if(!d && currentUser.email !== 'guest'){
-      d = localStorage.getItem('cart_guest');
-    }
-
+    const key = cartKey();
+    const d = localStorage.getItem(key);
     cart = d ? JSON.parse(d) : [];
   }catch(e){
     cart = [];
   }
   updateCounters();
 }
+
 
 function saveMyOrders(orders){ try{ localStorage.setItem(ordersKey(), JSON.stringify(orders)); }catch(e){} }
 function loadMyOrders(){ try{ const d=localStorage.getItem(ordersKey()); return d?JSON.parse(d):[] }catch(e){return []} }
@@ -2666,6 +2674,9 @@ async function loadSession(){
     // 🔥 3️⃣ PAGE RESTORE
     const page = getPageFromURL();
     switchPage(page, true);
+    if(page === 'cartPage'){
+  renderCart();
+}
 
     window.addEventListener('popstate', () => {
       const p = getPageFromURL();
@@ -3495,11 +3506,11 @@ function renderEventsTimeline(events){
 
   const doneTitles = events.map(e => e.title);
 
-  box.innerHTML = STATUS_FLOW.map((step, i) => {
+  box.innerHTML = STATUS_FLOW.map((step) => {
 
     const idx = doneTitles.indexOf(step);
     const isDone = idx !== -1;
-    const isCurrent = isDone && idx === doneTitles.length - 1;
+    const isCurrent = idx === doneTitles.length - 1;
 
     const time = isDone
       ? new Date(events[idx].timestamp).toLocaleString()
@@ -3507,7 +3518,7 @@ function renderEventsTimeline(events){
 
     return `
       <div class="timeline-step
-        ${isDone ? 'active' : ''}
+        ${isDone ? 'done' : ''}
         ${isCurrent ? 'current' : ''}">
         <span class="dot"></span>
         <div class="content">
@@ -3518,6 +3529,7 @@ function renderEventsTimeline(events){
     `;
   }).join('');
 }
+
 
   /* ===== FIXED 10% COUPON ONLY ===== */
 let appliedCouponCode = '';
