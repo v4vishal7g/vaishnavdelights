@@ -678,57 +678,12 @@ body{
   gap:20px;
   margin-top:20px;
 }
-
-.timeline{
-  width:200px;
-  position:relative;
-}
-
-.step{
-  padding-left:30px;
-  margin-bottom:24px;
-  position:relative;
-  color:#999;
-}
-
-.step::before{
-  content:'';
-  width:12px;
-  height:12px;
-  border-radius:50%;
-  background:#ccc;
-  position:absolute;
-  left:0;
-  top:4px;
-}
-
-.step::after{
-  content:'';
-  width:2px;
-  height:100%;
-  background:#ccc;
-  position:absolute;
-  left:5px;
-  top:16px;
-}
-
 .step:last-child::after{
   display:none;
 }
-
-.step.done{
-  color:#16a34a;
-}
-
 .step.done::before{
   background:#16a34a;
 }
-
-.step.active{
-  color:#2563eb;
-  font-weight:600;
-}
-
 .step.active::before{
   background:#2563eb;
 }
