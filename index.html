@@ -1755,6 +1755,18 @@ function scrollToSection(id){ setTimeout(()=>{ document.getElementById(id)?.scro
 
 
 function switchPage(id, fromPopstate = false){
+
+   if(id === 'ordersPage'){
+    renderOrdersPage();   // 🔥 ADD THIS
+  }
+
+  if(id === 'adminPage'){
+    renderAdminOrders();
+  }
+
+  if(!fromPopstate){
+    history.pushState({ page: id }, '', `#${id}`);
+  }
   // ✅ SAFETY: invalid / missing id
   if(!id || !document.getElementById(id)){
     id = 'customerPage';
@@ -2620,6 +2632,7 @@ async function loadSession(){
     loadCart();
     loadWish();
     updateAccountUI();
+      renderProducts(); 
 
     // ✅ ADD THIS (initial page restore)
     const page = getPageFromURL();
