@@ -1442,22 +1442,7 @@ body{
 const API_URL = "https://script.google.com/macros/s/AKfycbxZa6a6R0mwi4Psu9iTZl06MLyGL_NPsOon2eyNQYyuko_hnDGsyHBoiIvaUcIGUmBp/exec";
 const RAZORPAY_KEY = "rzp_live_Rzrtya5sXER7Ws"; // TODO change to your Razorpay key
 
-// ===== LIVE TRACKING (GLOBAL) =====
-let trackInterval = null;
 
-function startLiveTracking(){
-  stopLiveTracking(); // safety
-  trackInterval = setInterval(() => {
-    trackOrder();
-  }, 10000); // 10 sec
-}
-
-function stopLiveTracking(){
-  if(trackInterval){
-    clearInterval(trackInterval);
-    trackInterval = null;
-  }
-}
 
 // ===== ORDER STATUS FLOW (Flipkart style) =====
 const STATUS_FLOW = [
@@ -1732,8 +1717,8 @@ function scrollToSection(id){ setTimeout(()=>{ document.getElementById(id)?.scro
 
 
 function switchPage(id, fromPopstate = false){
+  stopLiveTracking(); 
 
-   stopLiveTracking();
    if(id === 'ordersPage'){
     renderOrdersPage();   // 🔥 ADD THIS
   }
@@ -2769,7 +2754,7 @@ async function trackOrder(){
 if(o.events && o.events.length){
   renderEventsTimeline(o.events);
 }
-        startLiveTracking();
+      
 
       
       const cartHtml = (function(cartData){
@@ -2799,7 +2784,7 @@ if(o.events && o.events.length){
           </div>
         </div>
       `;
-
+ startLiveTracking(o.order_id);
       return;
     }
 
@@ -3727,7 +3712,34 @@ function mergeGuestCartIntoUser(){
     showToast(res.message || 'Failed to update status');
   }
 }
- 
+ let trackInterval = null;
+
+function startLiveTracking(orderId){
+  stopLiveTracking(); // duplicate interval avoid
+
+  trackInterval = setInterval(async ()=>{
+    try{
+      const res = await apiCall({
+        action: 'get_order_events',
+        order_id: orderId
+      }, { showLoading:false });
+
+      if(res && res.status === 'ok'){
+        renderEventsTimeline(res.events || []);
+      }
+    }catch(e){
+      console.error('live tracking error', e);
+    }
+  }, 10000); // ⏱ 10 sec
+}
+
+function stopLiveTracking(){
+  if(trackInterval){
+    clearInterval(trackInterval);
+    trackInterval = null;
+  }
+}
+
 
 </script>
 </body>
