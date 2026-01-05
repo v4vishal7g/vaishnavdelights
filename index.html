@@ -2577,7 +2577,26 @@ async function renderAdminOrders(){
         Status: <strong>${o.status || 'Placed'}</strong>
         | ${o.payment || ''}
       </div>
+      <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
 
+  <button class="btn"
+    onclick="adminSetStatus('${o.order_id}','Packed')">
+    Mark Packed
+  </button>
+
+  <button class="btn"
+    onclick="adminSetStatus('${o.order_id}','Shipped')">
+    Mark Shipped
+  </button>
+
+  <button class="btn"
+    onclick="adminSetStatus('${o.order_id}','Out for Delivery')">
+    Out for Delivery
+  </button>
+
+</div>
+
+     
       ${canDeliver ? `
         <div style="margin-top:8px">
           <button class="btn"
@@ -3679,6 +3698,29 @@ function mergeGuestCartIntoUser(){
   cart = userCart;
 }
 
+ async function adminSetStatus(orderId, status){
+  if(!confirm(`Mark order as ${status}?`)) return;
+
+  const actionMap = {
+    'Packed': 'mark_packed',
+    'Shipped': 'mark_shipped',
+    'Out for Delivery': 'mark_out_for_delivery'
+  };
+
+  const res = await apiCall({
+    action: actionMap[status],
+    order_id: orderId,
+    email: currentUser.email   // 🔥 ADMIN AUTH
+  }, { showLoading:true, loadingText:'Updating status…' });
+
+  if(res && res.status === 'ok'){
+    showToast(`Order marked as ${status}`);
+    renderAdminOrders();
+  }else{
+    showToast(res.message || 'Failed to update status');
+  }
+}
+ 
 
 </script>
 </body>
