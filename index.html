@@ -3418,27 +3418,6 @@ let total = calculateCartTotal(); // ✅ RAW CART TOTAL ONLY
 placeFinalOrder('cod');
 
 }
-const ORDER_STEPS = [
-  'Order Confirmed',
-  'Packed',
-  'Shipped',
-  'Out for Delivery',
-  'Delivered'
-];
-
-function renderStatusTimeline(currentStatus){
-  const index = ORDER_STEPS.indexOf(currentStatus);
-
-document.querySelectorAll('.timeline-step')
-    .forEach((el,i)=>{
-      el.classList.remove('done','active');
-      if(i < index) el.classList.add('done');
-      if(i === index) el.classList.add('active');
-    });
-}
-  
-
-
 function loadOrderTimeline(orderId, currentStatus){
   document.getElementById('orderTimeline').style.display = 'block';
 
