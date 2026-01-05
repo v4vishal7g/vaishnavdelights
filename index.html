@@ -771,7 +771,8 @@ body{
 .timeline-step:last-child::before {
   display: none;
 }
-.timeline-step::before {
+
+  .timeline-step::before {
   content: '';
   position: absolute;
   left: 8px;
@@ -779,6 +780,21 @@ body{
   width: 2px;
   height: calc(100% - 22px);
   background: #e5e5e5;
+}
+  
+.timeline-step.done strong,
+.timeline-step.current strong {
+  color: #16a34a;
+}
+
+  
+  .timeline-step.done .dot,
+.timeline-step.current .dot {
+  background: #16a34a;
+}
+  .timeline-step.done::before,
+.timeline-step.current::before {
+  background: #16a34a;
 }
 
 .timeline-step:first-child::before{
@@ -842,9 +858,6 @@ body{
   transform: scale(0.97);
 }
 
-  .timeline-step.done + .timeline-step::before{
-  background:#16a34a;
-}
 
 .timeline-step.current strong{
   color:#2563eb;
@@ -856,15 +869,6 @@ body{
 }
 .timeline-step.done::before {
    background: #16a34a;
-}
-/* CURRENT STEP (BLUE) */
-.timeline-step.current .dot{
-  background:#2563eb;
-  box-shadow:0 0 0 4px rgba(37,99,235,.15);
-}
-
-.timeline-step.current strong{
-  color:#2563eb;
 }
 
 /* FUTURE STEPS ONLY FADE */
