@@ -1717,6 +1717,7 @@ function scrollToSection(id){ setTimeout(()=>{ document.getElementById(id)?.scro
 
 function switchPage(id, fromPopstate = false){
 
+   stopLiveTracking();
    if(id === 'ordersPage'){
     renderOrdersPage();   // 🔥 ADD THIS
   }
@@ -2755,6 +2756,23 @@ if(o.events && o.events.length){
 if(o.events && o.events.length){
   renderEventsTimeline(o.events);
 }
+let trackInterval = null;
+
+function startLiveTracking(orderId){
+  stopLiveTracking(); // duplicate interval rokne ke liye
+  trackInterval = setInterval(()=>{
+    trackOrder();
+  }, 10000);
+}
+
+function stopLiveTracking(){
+  if(trackInterval){
+    clearInterval(trackInterval);
+    trackInterval = null;
+  }
+}
+
+      
       const cartHtml = (function(cartData){
         try{
           const arr = (typeof cartData === 'string')
