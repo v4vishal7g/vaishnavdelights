@@ -1716,8 +1716,36 @@ function hideAllPages(){ document.querySelectorAll('.page').forEach(p=>p.classLi
 function scrollToSection(id){ setTimeout(()=>{ document.getElementById(id)?.scrollIntoView({behavior:'smooth'}); },120); }
 
 
+   let trackInterval = null;
+
+function startLiveTracking(orderId){
+  stopLiveTracking(); // duplicate interval avoid
+
+  trackInterval = setInterval(async ()=>{
+    try{
+      const res = await apiCall({
+        action: 'get_order_events',
+        order_id: orderId
+      }, { showLoading:false });
+
+      if(res && res.status === 'ok'){
+        renderEventsTimeline(res.events || []);
+      }
+    }catch(e){
+      console.error('live tracking error', e);
+    }
+  }, 10000); // ⏱ 10 sec
+}
+
+function stopLiveTracking(){
+  if(trackInterval){
+    clearInterval(trackInterval);
+    trackInterval = null;
+  }
+}
+
 function switchPage(id, fromPopstate = false){
-  stopLiveTracking(); 
+  
 
    if(id === 'ordersPage'){
     renderOrdersPage();   // 🔥 ADD THIS
@@ -1756,15 +1784,6 @@ function switchPage(id, fromPopstate = false){
     adminPage: "Admin"
   };
   document.title = titles[id] || titles.customerPage;
-
-  // ✅ push hash ONLY when not back/forward
-  if(!fromPopstate){
-    history.pushState(
-      { page: id },
-      '',
-      `#${id}`
-    );
-  }
 }
 
 
@@ -2822,8 +2841,7 @@ if(o.events && o.events.length){
         </div>
       `;
 
-      /* 🔥 TIMELINE FOR LOCAL ORDER */
-      loadOrderTimeline(found.order_id, found.status || 'Placed');
+     
 
       return;
     }
@@ -3418,34 +3436,6 @@ let total = calculateCartTotal(); // ✅ RAW CART TOTAL ONLY
 placeFinalOrder('cod');
 
 }
-function loadOrderTimeline(orderId, currentStatus){
-  document.getElementById('orderTimeline').style.display = 'block';
-
-
-  fetch(API_URL,{
-    method:'POST',
-    body:new URLSearchParams({
-      action:'get_order_events',
-      order_id:orderId
-    })
-  })
-  .then(r=>r.json())
-  .then(res=>{
-const box = document.getElementById('orderTimeline');
-    box.innerHTML='';
-
-    res.events.forEach(e=>{
-      box.innerHTML += `
-        <div class="event">
-          <div class="event-title">${e.title}</div>
-          <div class="event-time">
-            ${new Date(e.timestamp).toLocaleString()}
-          </div>
-        </div>
-      `;
-    });
-  });
-}
 
   // ===== Address helpers =====
 async function loadAddressesFromServer(){
@@ -3689,33 +3679,6 @@ function mergeGuestCartIntoUser(){
     renderAdminOrders();
   }else{
     showToast(res.message || 'Failed to update status');
-  }
-}
- let trackInterval = null;
-
-function startLiveTracking(orderId){
-  stopLiveTracking(); // duplicate interval avoid
-
-  trackInterval = setInterval(async ()=>{
-    try{
-      const res = await apiCall({
-        action: 'get_order_events',
-        order_id: orderId
-      }, { showLoading:false });
-
-      if(res && res.status === 'ok'){
-        renderEventsTimeline(res.events || []);
-      }
-    }catch(e){
-      console.error('live tracking error', e);
-    }
-  }, 10000); // ⏱ 10 sec
-}
-
-function stopLiveTracking(){
-  if(trackInterval){
-    clearInterval(trackInterval);
-    trackInterval = null;
   }
 }
 
