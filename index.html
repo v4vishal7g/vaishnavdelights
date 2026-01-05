@@ -678,16 +678,6 @@ body{
   gap:20px;
   margin-top:20px;
 }
-.step:last-child::after{
-  display:none;
-}
-.step.done::before{
-  background:#16a34a;
-}
-.step.active::before{
-  background:#2563eb;
-}
-
 .events{
   flex:1;
 }
@@ -757,38 +747,31 @@ body{
 .order-timeline{
   padding:12px;
 }
-
 .timeline-step{
+  position:relative;
   display:flex;
   gap:12px;
-  position:relative;
+  padding-left:32px;
   padding-bottom:28px;
 }
 
 .timeline-step:last-child{
   padding-bottom:0;
 }
-.timeline-step:last-child::before {
-  height: 12px;
+.timeline-step:last-child::before{
+  height:12px;
 }
 
-.timeline-step::before {
-  content: '';
-  position: absolute;
-  left: 7px;               /* center of dot */
-  top: 0;                  /* 🔥 start from top */
-  width: 2px;
-  height: 100%;            /* 🔥 full height */
-  background: #e5e7eb;
-  z-index: 1;
-}
-  
-.timeline-step.done strong,
-.timeline-step.current strong {
-  color: #16a34a;
-}
-
-  
+.timeline-step::before{
+  content:'';
+  position:absolute;
+  left:7px;          /* dot center */
+  top:0;
+  width:2px;
+  height:100%;
+  background:#e5e7eb;
+  z-index:1;
+}  
   .timeline-step.done .dot,
 .timeline-step.current .dot {
   background: #16a34a;
@@ -797,20 +780,25 @@ body{
 .timeline-step.current::before {
   background: #16a34a;
 }
-.timeline-step:first-child::before {
-  top: 12px;
-  height: calc(100% - 12px);
+.timeline-step:first-child::before{
+  top:12px;
+  height:calc(100% - 12px);
+}
+  
+.timeline-step.done strong,
+.timeline-step.current strong{
+  color:#16a34a;
 }
 
-.timeline-step .dot {
-  position: absolute;
-  left: 0;
-  top: 12px;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #d1d5db;
-  z-index: 2;
+.timeline-step .dot{
+  position:absolute;
+  left:0;
+  top:12px;
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  background:#d1d5db;
+  z-index:2;
 }
 
 .timeline-step {
@@ -825,11 +813,11 @@ body{
   display:block;
 }
 
-.timeline-step .content small{
-  color:#777;
-  font-size:12px;
-}
 
+.timeline-step .content small{
+  font-size:12px;
+  color:#777;
+}
 /* 🔥 MOBILE FIX */
 @media (max-width:600px){
   .timeline-step{
@@ -858,12 +846,6 @@ body{
 .btn-danger:active {
   transform: scale(0.97);
 }
-
-
-.timeline-step.current strong{
-  color:#2563eb;
-}
-
 /* DONE STEPS (GREEN) */
 .timeline-step.done .dot {
   background: #16a34a;
