@@ -1442,6 +1442,22 @@ body{
 const API_URL = "https://script.google.com/macros/s/AKfycbxZa6a6R0mwi4Psu9iTZl06MLyGL_NPsOon2eyNQYyuko_hnDGsyHBoiIvaUcIGUmBp/exec";
 const RAZORPAY_KEY = "rzp_live_Rzrtya5sXER7Ws"; // TODO change to your Razorpay key
 
+// ===== LIVE TRACKING (GLOBAL) =====
+let trackInterval = null;
+
+function startLiveTracking(){
+  stopLiveTracking(); // safety
+  trackInterval = setInterval(() => {
+    trackOrder();
+  }, 10000); // 10 sec
+}
+
+function stopLiveTracking(){
+  if(trackInterval){
+    clearInterval(trackInterval);
+    trackInterval = null;
+  }
+}
 
 // ===== ORDER STATUS FLOW (Flipkart style) =====
 const STATUS_FLOW = [
@@ -2749,28 +2765,11 @@ async function trackOrder(){
 
     if(resp && resp.status === 'ok' && resp.order){
       const o = resp.order;
-if(o.events && o.events.length){
-  renderEventsTimeline(o.events);
-}
 
 if(o.events && o.events.length){
   renderEventsTimeline(o.events);
 }
-let trackInterval = null;
-
-function startLiveTracking(orderId){
-  stopLiveTracking(); // duplicate interval rokne ke liye
-  trackInterval = setInterval(()=>{
-    trackOrder();
-  }, 10000);
-}
-
-function stopLiveTracking(){
-  if(trackInterval){
-    clearInterval(trackInterval);
-    trackInterval = null;
-  }
-}
+        startLiveTracking();
 
       
       const cartHtml = (function(cartData){
