@@ -743,18 +743,24 @@ body{
   }
 }
 /* ===== ORDER TIMELINE ===== */
-
 .order-timeline{
-  padding:12px;
+  position:relative;
+  padding-left:40px;
 }
+  .order-timeline::before{
+  content:'';
+  position:absolute;
+  left:16px;
+  top:12px;
+  bottom:12px;
+  width:2px;
+  background:#e5e7eb;
+}
+
 .timeline-step{
   position:relative;
-  display:flex;
-  gap:12px;
-  padding-left:32px;
   padding-bottom:28px;
 }
-
 .timeline-step:last-child{
   padding-bottom:0;
 }
@@ -771,6 +777,9 @@ body{
   height:100%;
   background:#e5e7eb;
   z-index:1;
+}
+  .timeline-step.done ~ .timeline-step::before{
+  background:#16a34a;
 }
   .timeline-step.done .dot,
 .timeline-step.current .dot {
@@ -792,11 +801,10 @@ body{
 
 .timeline-step .dot{
   position:absolute;
-  left:0;
-  top:0;
-  transform: translateY(8px); /* 🔥 center align */
-  width:16px;
-  height:16px;
+  left:-32px;
+  top:4px;
+  width:14px;
+  height:14px;
   border-radius:50%;
   background:#d1d5db;
   z-index:2;
@@ -857,7 +865,7 @@ body{
 
 /* FUTURE STEPS ONLY FADE */
 .timeline-step:not(.done):not(.current){
-  opacity: 0.45;
+  opacity:.45;
 }
 
 
