@@ -775,9 +775,9 @@ body{
   content: '';
   position: absolute;
   left: 8px;
-  top: 18px;
+  top: 22px;
   width: 2px;
-  height: 100%;
+  height: calc(100% - 22px);
   background: #e5e5e5;
 }
 
@@ -842,10 +842,6 @@ body{
   transform: scale(0.97);
 }
 
-.timeline-step.current .dot{
-  background:#2563eb;
-  box-shadow:0 0 0 4px rgba(37,99,235,.15);
-}
   .timeline-step.done + .timeline-step::before{
   background:#16a34a;
 }
@@ -856,11 +852,10 @@ body{
 
 /* DONE STEPS (GREEN) */
 .timeline-step.done .dot {
-  background: #2f80ed;
+  background: #16a34a;
 }
-
 .timeline-step.done::before {
-  background: #2f80ed;
+   background: #16a34a;
 }
 /* CURRENT STEP (BLUE) */
 .timeline-step.current .dot{
@@ -874,7 +869,7 @@ body{
 
 /* FUTURE STEPS ONLY FADE */
 .timeline-step:not(.done):not(.current){
-  opacity:.45;
+  opacity: 0.45;
 }
 
 
