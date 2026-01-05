@@ -747,37 +747,27 @@ body{
   position:relative;
   padding-left:40px;
 }
-  .order-timeline::before{
-  content:'';
-  position:absolute;
-  left:16px;
-  top:12px;
-  bottom:12px;
-  width:2px;
-  background:#e5e7eb;
-}
-
 .timeline-step{
   position:relative;
+  padding-left:32px;
   padding-bottom:28px;
 }
 .timeline-step:last-child{
   padding-bottom:0;
 }
 .timeline-step:last-child::before{
-  height:8px;
+  display:none;
 }
-  
 .timeline-step::before{
   content:'';
   position:absolute;
-  left:7px;              /* dot ka exact center */
-  top:8px;               /* 🔥 dot center se start */
+  left:-25px;          /* dot ke center se match */
+  top:18px;            /* dot ke neeche se start */
   width:2px;
-  height:100%;
+  height:calc(100% - 18px);
   background:#e5e7eb;
-  z-index:1;
-}
+}  
+
   .timeline-step.done ~ .timeline-step::before{
   background:#16a34a;
 }
