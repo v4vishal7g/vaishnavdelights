@@ -759,19 +759,19 @@ body{
   padding-bottom:0;
 }
 .timeline-step:last-child::before{
-  height:12px;
+  height:8px;
 }
-
+  
 .timeline-step::before{
   content:'';
   position:absolute;
-  left:7px;          /* dot center */
-  top:0;
+  left:7px;              /* dot ka exact center */
+  top:8px;               /* 🔥 dot center se start */
   width:2px;
   height:100%;
   background:#e5e7eb;
   z-index:1;
-}  
+}
   .timeline-step.done .dot,
 .timeline-step.current .dot {
   background: #16a34a;
@@ -781,8 +781,8 @@ body{
   background: #16a34a;
 }
 .timeline-step:first-child::before{
-  top:12px;
-  height:calc(100% - 12px);
+  top:16px;
+  height:calc(100% - 16px);
 }
   
 .timeline-step.done strong,
@@ -793,7 +793,8 @@ body{
 .timeline-step .dot{
   position:absolute;
   left:0;
-  top:12px;
+  top:0;
+  transform: translateY(8px); /* 🔥 center align */
   width:16px;
   height:16px;
   border-radius:50%;
