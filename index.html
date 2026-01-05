@@ -769,17 +769,18 @@ body{
   padding-bottom:0;
 }
 .timeline-step:last-child::before {
-  display: none;
+  height: 12px;
 }
 
-  .timeline-step::before {
+.timeline-step::before {
   content: '';
   position: absolute;
-  left: 8px;
-  top: 22px;
+  left: 7px;               /* center of dot */
+  top: 0;                  /* 🔥 start from top */
   width: 2px;
-  height: calc(100% - 22px);
-  background: #e5e5e5;
+  height: 100%;            /* 🔥 full height */
+  background: #e5e7eb;
+  z-index: 1;
 }
   
 .timeline-step.done strong,
@@ -796,25 +797,25 @@ body{
 .timeline-step.current::before {
   background: #16a34a;
 }
-
-.timeline-step:first-child::before{
-  display:none;
+.timeline-step:first-child::before {
+  top: 12px;
+  height: calc(100% - 12px);
 }
 
 .timeline-step .dot {
   position: absolute;
   left: 0;
-  top: 6px;
+  top: 12px;
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #ccc;
+  background: #d1d5db;
+  z-index: 2;
 }
 
 .timeline-step {
   position: relative;
-  padding-left: 28px;
-  margin-bottom: 20px;
+  padding-left: 32px;
 }
 
 
