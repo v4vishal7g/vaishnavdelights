@@ -1439,7 +1439,7 @@ body{
 
 <script>
 /* ------------------------- CONFIG ------------------------- */
-const API_URL = "https://script.google.com/macros/s/AKfycby1COLUo8lmO4A4DVt5u6CiaCLFjmvc1lJlcYCbd32F2iziHLE59jHTRqrl4LcufI0/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyd6QGy0HYLaJkHMO_gMZ9JUzw9yoaLVcUmf_7aiS4cTnXQ7Cf7WUeDPXT30w77AVFL/exec";
 const RAZORPAY_KEY = "rzp_live_Rzrtya5sXER7Ws"; // TODO change to your Razorpay key
 
 
@@ -2007,7 +2007,11 @@ const canReturn =
 
 const canCancel =
   orderHours <= 48 &&
-  (cleanStatus === 'placed' || cleanStatus === 'confirmed');
+  (
+    cleanStatus.includes('confirm') ||
+    cleanStatus === 'placed'
+  );
+
 
 
 
